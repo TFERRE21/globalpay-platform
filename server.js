@@ -219,7 +219,16 @@ app.post("/api/support/chat",async(req,res)=>{
   const message=String(req.body?.message||"").trim().slice(0,4000);
   if(!message)return res.status(400).json({success:false,message:"Digite sua dúvida."});
   const apiKey=process.env.OPENAI_API_KEY;
-  if(!apiKey)return res.status(503).json({success:false,message:"O atendimento automático ainda não está configurado. Use o canal de contato informado no site."});
+  if(!apiKey){
+   const q=message.toLocaleLowerCase("pt-BR");
+   let reply="Posso ajudar com cadastro, modalidades de crédito e acompanhamento. Para consultar um pedido específico, entre em Minha Conta. A CrediViva não confirma aprovação sem atualização registrada no sistema.";
+   if(/como funciona|como funciona o site|funciona/.test(q)) reply="A CrediViva ajuda você a conhecer modalidades de crédito e registrar uma solicitação para acompanhamento. Escolha uma opção na página inicial, informe a faixa de valor e o prazo, crie sua conta e acompanhe o protocolo em Minha Conta. O registro no site não significa que a proposta já foi enviada a um banco.";
+   else if(/cadastro|cadastrar|conta|senha|entrar|login/.test(q)) reply="Para criar sua conta, toque em Minha Conta no topo do site e escolha Criar cadastro. Informe seu nome, e-mail, senha e celular com DDD. Depois você poderá consultar suas solicitações e preferências de notificação.";
+   else if(/status|acompanhar|protocolo|andamento|aprovad|recusad|análise|analise/.test(q)) reply="Entre em Minha Conta para consultar o protocolo e o status registrado. Os estados podem incluir recebido, em análise, documentos pendentes, aprovado ou recusado. A decisão final depende da instituição financeira e só será exibida quando o status for atualizado.";
+   else if(/whatsapp|notifica|celular|mensagem/.test(q)) reply="Em Minha Conta, informe seu celular e autorize os avisos pelo WhatsApp. As mensagens só serão enviadas quando o serviço de WhatsApp estiver configurado no sistema. Você também pode ativar notificações do navegador, se essa função estiver configurada.";
+   else if(/banco|empréstimo|emprestimo|crédito|credito|juros/.test(q)) reply="As opções apresentadas são informativas. Taxas, elegibilidade, disponibilidade e aprovação dependem da instituição financeira. Não pague taxa antecipada para liberar empréstimo e não compartilhe senhas ou códigos de segurança.";
+   return res.json({success:true,reply});
+  }
   const r=await fetch("https://api.openai.com/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+apiKey},body:JSON.stringify({model:process.env.OPENAI_MODEL||"gpt-4o-mini",messages:[{role:"system",content:"Você é o assistente de suporte da CrediViva. Responda em português brasileiro, com clareza e cordialidade. Explique cadastro, acompanhamento e conceitos gerais. Nunca afirme que uma proposta foi enviada, aprovada ou recusada sem consultar o painel autenticado. Nunca solicite senha, código de autenticação, número completo de cartão ou pagamento antecipado. Deixe claro que a CrediViva não garante aprovação e que a decisão é da instituição financeira."},{role:"user",content:message}],temperature:0.25,max_tokens:450})});
   const data=await r.json().catch(()=>({}));
   if(!r.ok){console.error("[CrediViva chat]",data);return res.status(502).json({success:false,message:"Atendimento temporariamente indisponível."});}
