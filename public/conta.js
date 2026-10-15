@@ -13,3 +13,29 @@ $("#phone-form").addEventListener("submit",async e=>{e.preventDefault();const f=
 $("#refresh-loans").addEventListener("click",loadLoans);$("#logout").addEventListener("click",()=>{localStorage.removeItem("crediviva-token");location.reload();});
 if(new URLSearchParams(location.search).get("cadastro")==="1")setTab("register");else setTab("login");
 if(token())loadDashboard();
+
+async function registerPush(){
+ const notice=$("#push-notice");
+ const show=(message)=>{notice.hidden=false;notice.textContent=message;};
+ try{
+  if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){show("Este navegador não oferece notificações push. Tente pelo Chrome no celular.");return;}
+  if(!token()){show("Entre na sua conta primeiro.");return;}
+  const keyResponse=await fetch("/api/notifications/vapid-public-key");
+  const keyData=await keyResponse.json();
+  if(!keyResponse.ok)throw new Error(keyData.message||"Notificações ainda não configuradas no servidor.");
+  const permission=await Notification.requestPermission();
+  if(permission!=="granted"){show("Permissão de notificações não concedida. Ative nas configurações do navegador e tente novamente.");return;}
+  const registration=await navigator.serviceWorker.register("/sw.js");
+  let subscription=await registration.pushManager.getSubscription();
+  if(!subscription){
+   const raw=keyData.publicKey.replace(/-/g,"+").replace(/_/g,"/");
+   const padded=raw+"=".repeat((4-raw.length%4)%4);
+   const bytes=Uint8Array.from(atob(padded),c=>c.charCodeAt(0));
+   subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:bytes});
+  }
+  const response=await api("/api/notifications/subscribe",{method:"POST",body:JSON.stringify({subscription})});
+  show(response.message||"Notificações ativadas neste celular.");
+ }catch(error){show(error.message||"Não foi possível ativar as notificações.");}
+}
+$("#enable-push")?.addEventListener("click",registerPush);
+$("#test-push")?.addEventListener("click",async()=>{const notice=$("#push-notice");notice.hidden=false;notice.textContent="Enviando teste...";try{const data=await api("/api/notifications/test",{method:"POST",body:"{}"});notice.textContent=data.message;}catch(error){notice.textContent=error.message;}});
