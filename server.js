@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import pg from "pg";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import webpush from "web-push";
 
 const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
@@ -55,6 +56,7 @@ async function ensureSchema() {
       status_note TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
     CREATE INDEX IF NOT EXISTS cv_loan_applications_user_idx ON cv_loan_applications(user_id, created_at DESC);
+    CREATE TABLE IF NOT EXISTS cv_push_subscriptions (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL REFERENCES cv_users(id) ON DELETE CASCADE, endpoint TEXT NOT NULL UNIQUE, subscription_json JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
     CREATE TABLE IF NOT EXISTS cv_support_messages (
       id BIGSERIAL PRIMARY KEY, user_id BIGINT REFERENCES cv_users(id) ON DELETE SET NULL,
       visitor_email VARCHAR(254), role VARCHAR(12) NOT NULL, message TEXT NOT NULL,
@@ -148,9 +150,57 @@ app.get("/api/loans",auth,async(req,res)=>{
  try {const r=await pool.query("SELECT id,protocol,product,amount_range,urgency,status,status_note,created_at,updated_at FROM cv_loan_applications WHERE user_id=$1 ORDER BY created_at DESC",[req.user.id]);res.json({success:true,applications:r.rows});}
  catch(error){console.error(error);res.status(500).json({success:false,message:"Não foi possível consultar as solicitações."});}
 });
+
+function pushIsConfigured(){return !!(process.env.VAPID_PUBLIC_KEY&&process.env.VAPID_PRIVATE_KEY&&process.env.VAPID_SUBJECT);}
+function configureWebPush(){if(pushIsConfigured())webpush.setVapidDetails(process.env.VAPID_SUBJECT,process.env.VAPID_PUBLIC_KEY,process.env.VAPID_PRIVATE_KEY);}
+app.get("/api/notifications/vapid-public-key",(req,res)=>{
+ if(!pushIsConfigured())return res.status(503).json({success:false,message:"Notificações do navegador ainda não configuradas no servidor."});
+ res.json({success:true,publicKey:process.env.VAPID_PUBLIC_KEY});
+});
+app.post("/api/notifications/subscribe",auth,async(req,res)=>{
+ try{
+  if(!pushIsConfigured())return res.status(503).json({success:false,message:"Notificações ainda não configuradas no servidor."});
+  const sub=req.body?.subscription;
+  if(!sub?.endpoint||!sub?.keys?.p256dh||!sub?.keys?.auth)return res.status(400).json({success:false,message:"Assinatura do navegador inválida."});
+  await pool.query("INSERT INTO cv_push_subscriptions(user_id,endpoint,subscription_json,updated_at) VALUES($1,$2,$3,NOW()) ON CONFLICT(endpoint) DO UPDATE SET user_id=EXCLUDED.user_id,subscription_json=EXCLUDED.subscription_json,updated_at=NOW()",[req.user.id,sub,JSON.stringify(sub)]);
+  res.json({success:true,message:"Notificações deste celular ativadas."});
+ }catch(error){console.error("[CrediViva push subscribe]",error);res.status(500).json({success:false,message:"Não foi possível ativar as notificações."});}
+});
+app.post("/api/notifications/test",auth,async(req,res)=>{
+ try{
+  configureWebPush();
+  const result=await pool.query("SELECT id,endpoint,subscription_json FROM cv_push_subscriptions WHERE user_id=$1",[req.user.id]);
+  if(!result.rows.length)return res.status(404).json({success:false,message:"Ative as notificações neste celular primeiro."});
+  let sent=0;
+  for(const row of result.rows){
+   try{await webpush.sendNotification(row.subscription_json,JSON.stringify({title:"🔔 CrediViva — teste",body:"As notificações estão funcionando. Você receberá avisos sobre o andamento da sua solicitação.",url:"/conta.html",tag:"crediviva-test"}),{TTL:300,urgency:"normal"});sent++;}
+   catch(error){if([404,410].includes(Number(error.statusCode)))await pool.query("DELETE FROM cv_push_subscriptions WHERE id=$1",[row.id]);else console.error("[CrediViva push test]",error.message);}
+  }
+  res.json({success:sent>0,message:sent>0?"Notificação de teste enviada.":"Não foi possível enviar. Confira a permissão do navegador e as chaves VAPID.",sent});
+ }catch(error){console.error("[CrediViva push test]",error);res.status(500).json({success:false,message:"Erro ao enviar notificação de teste."});}
+});
+async function notifyLoanPush(userId,item,note){
+ if(!pushIsConfigured())return {sent:false,reason:"vapid_not_configured"};
+ try{
+  configureWebPush();
+  const r=await pool.query("SELECT id,endpoint,subscription_json FROM cv_push_subscriptions WHERE user_id=$1",[userId]);
+  let sent=0;
+  const statusText=String(item.status).replaceAll("_"," ");
+  const titles={APROVADO:"✅ Empréstimo aprovado",RECUSADO:"❌ Solicitação atualizada",EM_ANALISE:"🔎 Empréstimo em análise",DOCUMENTOS_PENDENTES:"📄 Documentos pendentes",CANCELADO:"Solicitação cancelada",RECEBIDO:"📩 Solicitação recebida"};
+  for(const row of r.rows){
+   try{await webpush.sendNotification(row.subscription_json,JSON.stringify({title:titles[item.status]||"🔔 Atualização CrediViva",body:"Protocolo "+item.protocol+" • "+statusText+(note?" — "+note:""),url:"/conta.html",tag:"crediviva-loan-"+item.id}),{TTL:86400,urgency:"high"});sent++;}
+   catch(error){if([404,410].includes(Number(error.statusCode)))await pool.query("DELETE FROM cv_push_subscriptions WHERE id=$1",[row.id]);else console.error("[CrediViva push]",error.message);}
+  }
+  return {sent:sent>0,count:sent};
+ }catch(error){console.error("[CrediViva push status]",error);return {sent:false,reason:"push_error"};}
+}
+
 app.post("/api/admin/loans/:id/status",async(req,res)=>{
  const supplied=String(req.headers["x-admin-token"]||"");
- const expectedAdminToken=String(process.env.CREDIVIVA_ADMIN_TOKEN||"");\n const suppliedHash=crypto.createHash("sha256").update(supplied).digest();\n const expectedHash=crypto.createHash("sha256").update(expectedAdminToken).digest();\n if(!expectedAdminToken||!crypto.timingSafeEqual(suppliedHash,expectedHash))return res.status(401).json({success:false,message:"Acesso administrativo não autorizado."});
+ const expectedAdminToken=String(process.env.CREDIVIVA_ADMIN_TOKEN||"");
+ const suppliedHash=crypto.createHash("sha256").update(supplied).digest();
+ const expectedHash=crypto.createHash("sha256").update(expectedAdminToken).digest();
+ if(!expectedAdminToken||!crypto.timingSafeEqual(suppliedHash,expectedHash))return res.status(401).json({success:false,message:"Acesso administrativo não autorizado."});
  const status=String(req.body?.status||"").toUpperCase(), note=String(req.body?.note||"").trim().slice(0,1000);
  const allowed=["RECEBIDO","EM_ANALISE","DOCUMENTOS_PENDENTES","APROVADO","RECUSADO","CANCELADO"];
  if(!allowed.includes(status))return res.status(400).json({success:false,message:"Status inválido."});
@@ -158,9 +208,10 @@ app.post("/api/admin/loans/:id/status",async(req,res)=>{
   const r=await pool.query("UPDATE cv_loan_applications SET status=$1,status_note=$2,updated_at=NOW() WHERE id=$3 RETURNING id,user_id,protocol,product,status,status_note,updated_at",[status,note||null,req.params.id]);
   if(!r.rows.length)return res.status(404).json({success:false,message:"Solicitação não encontrada."});
   const item=r.rows[0], u=await pool.query("SELECT phone,whatsapp_opt_in FROM cv_users WHERE id=$1",[item.user_id]);
-  let notification={sent:false,reason:"whatsapp_opt_in_not_enabled"};
-  if(u.rows[0]?.phone&&u.rows[0]?.whatsapp_opt_in)notification=await notifyWhatsApp(u.rows[0].phone,"Atualização da CrediViva — "+item.protocol,"O status da sua solicitação mudou para: "+item.status.replaceAll("_"," ")+". "+(note||"Entre na sua conta para ver os detalhes.")+" Acompanhe seu pedido no site.");
-  res.json({success:true,application:item,notification});
+  let whatsapp={sent:false,reason:"whatsapp_opt_in_not_enabled"};
+  if(u.rows[0]?.phone&&u.rows[0]?.whatsapp_opt_in)whatsapp=await notifyWhatsApp(u.rows[0].phone,"Atualização da CrediViva — "+item.protocol,"O status da sua solicitação mudou para: "+item.status.replaceAll("_"," ")+". "+(note||"Entre na sua conta para ver os detalhes.")+" Acompanhe seu pedido no site.");
+  const push=await notifyLoanPush(item.user_id,item,note);
+  res.json({success:true,application:item,notifications:{whatsapp,push}});
  }catch(error){console.error("[CrediViva admin status]",error);res.status(500).json({success:false,message:"Não foi possível atualizar o status."});}
 });
 app.post("/api/support/chat",async(req,res)=>{
