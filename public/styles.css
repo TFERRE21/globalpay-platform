@@ -476,3 +476,18 @@ body.account-modal-open{overflow:hidden}
 .lender-chip img{display:block;width:25px;height:25px;object-fit:contain}
 .lender-chip img:not([src]){display:none}
 .account-link{cursor:pointer}
+
+/* Brand-accurate text treatments until official partnership-approved logo assets are supplied */
+.lenders-window{overflow:hidden}
+.lenders-track{width:max-content;display:flex;align-items:center;gap:14px;animation:lender-marquee 34s linear infinite}
+.lenders-window:hover .lenders-track,.lenders-window:focus-within .lenders-track{animation-play-state:paused}
+.lender-chip{display:flex;align-items:center;gap:10px;min-width:150px;min-height:54px;padding:10px 17px;background:#fff;border:1px solid #e2e9f3;border-radius:15px;box-shadow:0 6px 18px #10294d08;color:#233a59;font-size:13px;white-space:nowrap}
+.lender-chip .lender-wordmark{display:grid;place-items:center;width:35px;height:35px;flex:0 0 35px;border-radius:10px;background:#f3f6fc;font-size:14px;font-weight:900;letter-spacing:-.6px}
+.lender-bb .lender-wordmark{background:#fff1c9;color:#003882}
+.lender-caixa .lender-wordmark{background:#e8f5ff;color:#005ca9;font-size:10px}
+.lender-itau .lender-wordmark{background:#fff0df;color:#ec7000;font-size:12px}
+.lender-bradesco .lender-wordmark{background:#ffe9ee;color:#cc092f;font-size:21px}
+.lender-santander .lender-wordmark{background:#ffe9e9;color:#ec0000}
+.lender-sicredi .lender-wordmark{background:#e7f8e9;color:#27823a}
+.lender-chip strong{font-weight:800}
+@media(prefers-reduced-motion:reduce){.lenders-track{animation:none}}
