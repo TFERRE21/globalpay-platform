@@ -17,3 +17,82 @@ html[data-theme="dark"]{color-scheme:dark;--bg:#071426;--ink:#f4f7fb;--muted:#b2
 @media(max-width:760px){.topbar{height:60px;padding:0 13px}.topbar nav{display:none}.brand-mark{width:31px;height:31px}.brand-name{font-size:17px}.header-actions .button{min-height:32px;padding:7px 10px;font-size:8px}.hero{grid-template-columns:1fr;padding:25px 17px 28px;gap:20px}.hero-copy{justify-self:start}.hero h1{font-size:clamp(46px,10vw,61px)}.hero-visual{height:clamp(245px,70vw,350px)}.floating-bottom{left:8px;right:8px;max-width:none}.trust-strip{grid-template-columns:repeat(2,minmax(0,1fr));padding:10px 12px}.trust-strip article{padding:8px 5px;border-right:0;border-bottom:1px solid #e5edf6}.trust-strip article:nth-child(odd){border-right:1px solid #e5edf6}.trust-strip article:nth-child(n+3){border-bottom:0}.products-section,.how-section{padding:29px 14px 33px}.section-heading{display:block;margin-bottom:17px}.section-heading h2{font-size:32px}.section-heading>p{margin-top:10px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.product-art{min-height:92px}.product-content{padding:11px}.product-card h3{font-size:12px;min-height:42px}.product-card p{font-size:9px;min-height:45px}.product-card li{font-size:8px}.product-cta{font-size:8px;padding:8px}.benefits-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:16px 14px;gap:5px}.benefits-grid article{padding:10px;border-right:0;border-bottom:1px solid #dfe8f4}.benefits-grid article:nth-child(odd){border-right:1px solid #dfe8f4}.benefits-grid article:last-child{grid-column:1/-1;border-bottom:0}.steps{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.step-card{min-height:0;padding:13px}.testimonials-inner{grid-template-columns:1fr;padding:30px 14px;gap:12px}.testimonials h2{font-size:31px}.testimonial-card{min-height:175px;padding:16px}.final-cta{grid-template-columns:1fr;padding:28px 16px;gap:18px}.final-art{min-height:190px}.final-copy h2{font-size:34px}.final-checks{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.security-section{width:calc(100% - 24px);grid-template-columns:40px minmax(0,1fr);padding:14px;gap:10px}.security-section .text-link{grid-column:2}.faq{padding:0 16px 36px}.footer{grid-template-columns:1fr;padding:22px 16px 16px;gap:12px}.footer-links{justify-content:flex-start;flex-wrap:wrap}.footer>small{grid-column:auto}}
 @media(max-width:420px){.product-grid{grid-template-columns:1fr}.product-art{min-height:100px}.product-card h3,.product-card p{min-height:0}.product-card h3{font-size:14px}.product-card p{font-size:9px}.hero-benefits{gap:8px}.hero-benefits span{font-size:8px}.selection-fields{grid-template-columns:1fr}.final-checks{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
+
+/* Reference hero: broad full-width family/car scene, larger brand mark and more premium navigation. */
+.topbar{height:76px!important;padding-inline:clamp(22px,5vw,86px)!important;gap:24px!important}
+.brand{gap:12px!important}
+.brand-mark{width:54px!important;height:48px!important;border-radius:15px 19px 15px 19px!important;font-size:0!important;position:relative!important;background:linear-gradient(145deg,#267cff 0%,#1765e8 45%,#7545f5 100%)!important;box-shadow:0 8px 20px #246cff30!important;clip-path:polygon(0 14%,40% 0,58% 0,100% 18%,78% 100%,48% 85%,25% 100%)}
+.brand-mark:before{content:"";position:absolute;left:12px;top:9px;width:20px;height:20px;border:3px solid #fff;border-top-color:transparent;border-radius:50%;transform:rotate(-28deg)}
+.brand-mark:after{content:"";position:absolute;right:9px;bottom:8px;width:16px;height:16px;border:3px solid #fff;border-left-color:transparent;border-radius:50%;transform:rotate(25deg)}
+.brand-name{font-size:25px!important;letter-spacing:-1px!important}
+.brand-name small{font-size:7px!important;letter-spacing:.9px!important;margin-top:5px!important}
+.topbar nav{gap:clamp(12px,2vw,30px)!important}
+.topbar nav a{font-size:12px!important;font-weight:700!important}
+.theme-toggle{min-height:42px!important;padding:9px 14px!important;font-size:11px!important}
+.header-actions .button{min-height:42px!important;padding:10px 18px!important;font-size:11px!important}
+.hero{min-height:clamp(440px,43vw,650px)!important;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)!important;gap:clamp(28px,4vw,64px)!important;padding:clamp(36px,4vw,64px) clamp(30px,6vw,110px) clamp(34px,4vw,58px)!important;background:radial-gradient(ellipse at 80% 20%,#d7e9ff 0,transparent 44%),linear-gradient(110deg,#fff 0%,#f2f7ff 48%,#e2f1ff 100%)!important}
+.hero-copy{max-width:680px!important}
+.hero .eyebrow{font-size:12px!important;letter-spacing:2px!important;margin-bottom:20px!important}
+.hero h1{font-size:clamp(54px,5.6vw,88px)!important;letter-spacing:-4px!important;line-height:.94!important;margin-bottom:20px!important}
+.hero-text{font-size:clamp(14px,1.15vw,17px)!important;line-height:1.65!important;max-width:600px!important;margin-bottom:20px!important}
+.hero-benefits{gap:14px 18px!important;margin:20px 0 24px!important}
+.hero-benefits span{font-size:clamp(10px,.85vw,13px)!important;gap:9px!important}
+.hero-benefits i{width:28px!important;height:28px!important;font-size:14px!important}
+.hero-cta{min-height:58px!important;padding:16px 28px!important;font-size:15px!important;min-width:290px!important}
+.microcopy{font-size:10px!important;max-width:600px!important;margin-top:15px!important}
+.hero-visual{height:clamp(340px,32vw,520px)!important;border-radius:28px 28px 78px 28px!important;box-shadow:0 28px 55px #153b6825!important}
+.hero-photo{object-position:center 45%!important;border-radius:inherit!important}
+.hero-gradient{border-radius:inherit!important;background:linear-gradient(0deg,#10284b38,transparent 50%)!important}
+.floating-card{padding:16px 18px!important;gap:12px!important;border-radius:18px!important;box-shadow:0 18px 42px #102b5025!important}
+.floating-card strong{font-size:12px!important}
+.floating-card small{font-size:10px!important}
+.float-icon{width:44px!important;height:44px!important;flex-basis:44px!important;border-radius:14px!important;font-size:22px!important}
+.floating-top{top:18px!important;right:18px!important}
+.floating-bottom{bottom:16px!important;left:-28px!important;max-width:330px!important}
+.round-arrow{width:40px!important;height:40px!important;flex-basis:40px!important}
+.trust-strip{padding:18px clamp(24px,6vw,100px)!important;background:#ffffffed!important;border-radius:26px 26px 0 0!important;position:relative!important;margin-top:-2px!important;box-shadow:0 -10px 35px #173b650b!important}
+.trust-strip article{padding:10px clamp(10px,2vw,30px)!important;gap:14px!important}
+.trust-icon{width:48px!important;height:48px!important;flex-basis:48px!important;border-radius:50%!important;font-size:23px!important}
+.trust-strip strong{font-size:14px!important}
+.trust-strip small{font-size:12px!important}
+@media(min-width:1500px){
+ .hero{min-height:600px!important}
+ .hero-visual{height:500px!important}
+}
+@media(max-width:1100px){
+ .topbar{height:68px!important;padding-inline:20px!important}
+ .brand-mark{width:42px!important;height:40px!important}
+ .brand-name{font-size:21px!important}
+ .topbar nav{gap:10px!important}
+ .topbar nav a{font-size:9px!important}
+ .hero{min-height:420px!important;padding:30px 28px!important;gap:22px!important}
+ .hero h1{font-size:clamp(44px,5.6vw,60px)!important}
+ .hero-visual{height:320px!important}
+ .hero-cta{min-width:0!important}
+ .floating-bottom{left:-12px!important}
+}
+@media(max-width:760px){
+ .topbar{height:64px!important;padding:0 14px!important}
+ .brand{gap:8px!important}.brand-mark{width:36px!important;height:35px!important;border-radius:10px!important}
+ .brand-mark:before{left:8px;top:7px;width:15px;height:15px;border-width:2px}.brand-mark:after{right:6px;bottom:6px;width:12px;height:12px;border-width:2px}
+ .brand-name{font-size:18px!important}.brand-name small{font-size:5px!important}
+ .hero{min-height:0!important;grid-template-columns:1fr!important;padding:30px 17px 32px!important;gap:24px!important}
+ .hero .eyebrow{font-size:10px!important;margin-bottom:14px!important}
+ .hero h1{font-size:clamp(48px,10vw,66px)!important;letter-spacing:-2.8px!important;margin-bottom:15px!important}
+ .hero-text{font-size:13px!important}
+ .hero-benefits{gap:9px!important;margin:15px 0 19px!important}
+ .hero-benefits span{font-size:9px!important}
+ .hero-benefits i{width:22px!important;height:22px!important;font-size:11px!important}
+ .hero-cta{width:100%!important;min-width:0!important;min-height:48px!important;font-size:12px!important}
+ .microcopy{font-size:9px!important}
+ .hero-visual{height:clamp(260px,72vw,390px)!important;border-radius:20px 20px 48px 20px!important}
+ .floating-card{padding:10px 11px!important;gap:8px!important;border-radius:12px!important}
+ .floating-card strong{font-size:9px!important}.floating-card small{font-size:8px!important}
+ .float-icon{width:30px!important;height:30px!important;flex-basis:30px!important;font-size:15px!important}
+ .floating-bottom{left:8px!important;right:8px!important;bottom:8px!important;max-width:none!important}
+ .round-arrow{width:28px!important;height:28px!important;flex-basis:28px!important}
+ .trust-strip{padding:10px 10px!important;border-radius:15px 15px 0 0!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .trust-strip article{padding:8px 5px!important;gap:8px!important}
+ .trust-icon{width:30px!important;height:30px!important;flex-basis:30px!important;font-size:15px!important}
+ .trust-strip strong{font-size:9px!important}.trust-strip small{font-size:8px!important}
+}
