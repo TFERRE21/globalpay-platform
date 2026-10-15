@@ -52,4 +52,4 @@ setupAccountModal();
 
 
 /* Use official image assets when available; keep a clear text fallback if an image host fails. */
-document.querySelectorAll(".lender-chip img").forEach(img=>img.addEventListener("error",()=>img.remove(),{once:true}));
+document.querySelectorAll(".lender-chip img").forEach(img=>{img.addEventListener("load",()=>{const fallback=img.parentElement?.querySelector(".lender-logo-fallback");if(fallback)fallback.hidden=true;},{once:true});img.addEventListener("error",()=>img.remove(),{once:true});});
