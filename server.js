@@ -150,7 +150,7 @@ app.get("/api/loans",auth,async(req,res)=>{
 });
 app.post("/api/admin/loans/:id/status",async(req,res)=>{
  const supplied=String(req.headers["x-admin-token"]||"");
- if(!process.env.CREDIVIVA_ADMIN_TOKEN||!crypto.timingSafeEqual(Buffer.from(supplied.padEnd(64," ").slice(0,64)),Buffer.from(String(process.env.CREDIVIVA_ADMIN_TOKEN).padEnd(64," ").slice(0,64))))return res.status(401).json({success:false,message:"Acesso administrativo não autorizado."});
+ const expectedAdminToken=String(process.env.CREDIVIVA_ADMIN_TOKEN||"");\n const suppliedHash=crypto.createHash("sha256").update(supplied).digest();\n const expectedHash=crypto.createHash("sha256").update(expectedAdminToken).digest();\n if(!expectedAdminToken||!crypto.timingSafeEqual(suppliedHash,expectedHash))return res.status(401).json({success:false,message:"Acesso administrativo não autorizado."});
  const status=String(req.body?.status||"").toUpperCase(), note=String(req.body?.note||"").trim().slice(0,1000);
  const allowed=["RECEBIDO","EM_ANALISE","DOCUMENTOS_PENDENTES","APROVADO","RECUSADO","CANCELADO"];
  if(!allowed.includes(status))return res.status(400).json({success:false,message:"Status inválido."});
