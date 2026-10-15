@@ -491,3 +491,23 @@ body.account-modal-open{overflow:hidden}
 .lender-sicredi .lender-wordmark{background:#e7f8e9;color:#27823a}
 .lender-chip strong{font-weight:800}
 @media(prefers-reduced-motion:reduce){.lenders-track{animation:none}}
+
+/* Financial institution marks and partner application area */
+.lenders-window{overflow:hidden}
+.lenders-track{width:max-content;display:flex;align-items:center;gap:14px;animation:lender-marquee 34s linear infinite}
+.lenders-window:hover .lenders-track,.lenders-window:focus-within .lenders-track{animation-play-state:paused}
+.lender-chip{display:inline-flex;align-items:center;gap:9px;min-width:155px;min-height:58px;padding:10px 15px;background:#fff;border:1px solid #e2e9f3;border-radius:14px;box-shadow:0 6px 18px #10294d08;color:#233a59;font-size:12px;white-space:nowrap}
+.lender-chip img{width:32px;height:32px;object-fit:contain;display:block}
+.lender-logo-fallback{display:grid;place-items:center;width:32px;height:32px;flex:0 0 32px;border-radius:9px;background:color-mix(in srgb,var(--bank-color) 12%,white);color:var(--bank-color);font-weight:900;font-size:13px}
+.lender-chip img+strong{margin-left:0}
+.partner-join{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:24px;align-items:center;padding:clamp(24px,5vw,54px);background:linear-gradient(125deg,#f0f6ff,#fff7fc);border-top:1px solid #e1eafa;border-bottom:1px solid #e1eafa}
+.partner-join h2{font-size:clamp(24px,3vw,36px);line-height:1.15;margin:8px 0 12px}
+.partner-join p{color:#596d87;line-height:1.7;font-size:14px}
+.partner-join-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.partner-join-links a{display:flex;flex-direction:column;gap:5px;padding:16px;border:1px solid #dfe8f5;border-radius:14px;background:#fff;transition:transform .18s,box-shadow .18s}
+.partner-join-links a:hover{transform:translateY(-2px);box-shadow:0 10px 28px #1b3e6d14}
+.partner-join-links strong{font-size:15px;color:#16375f}
+.partner-join-links span{font-size:11px;color:#3567d8;font-weight:700}
+.partner-join>small{grid-column:1/-1;color:#697d96;font-size:11px;line-height:1.6}
+@media(max-width:760px){.partner-join{grid-template-columns:1fr;padding:25px 18px;gap:15px}.partner-join-links{grid-template-columns:1fr 1fr}.partner-join-links a{padding:12px}.lender-chip{min-width:140px}}
+@media(prefers-reduced-motion:reduce){.lenders-track{animation:none}}
