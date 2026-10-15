@@ -50,3 +50,6 @@ function setupAccountModal(){
 }
 setupAccountModal();
 
+
+/* Use official image assets when available; keep a clear text fallback if an image host fails. */
+document.querySelectorAll(".lender-chip img").forEach(img=>img.addEventListener("error",()=>img.remove(),{once:true}));
