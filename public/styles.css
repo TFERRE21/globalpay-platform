@@ -51,7 +51,7 @@ h1,h2,h3{font-family:Manrope,sans-serif}
 .trust-strip article{display:flex;align-items:center;gap:12px;min-width:0;padding:0 17px;border-right:1px solid #e6edf4}
 .trust-strip article:first-child{padding-left:0}.trust-strip article:last-child{padding-right:0;border-right:0}
 .trust-icon,.product-icon{display:grid;place-items:center;flex:0 0 auto;border-radius:50%;font-weight:700}
-.trust-icon{width:42px;height:42px;font-size:22px}
+.trust-icon{width:42px;height:42px;font-size:22px}.trust-icon.blue{font-size:13px;font-weight:900;letter-spacing:-.5px}
 .trust-icon.blue,.product-icon.blue{background:#e3efff;color:#1769ce}
 .trust-icon.purple,.product-icon.purple{background:#f0e7ff;color:#7a42d4}
 .trust-icon.green,.product-icon.green{background:#def6e9;color:#008b61}
@@ -66,7 +66,7 @@ h1,h2,h3{font-family:Manrope,sans-serif}
 .section-heading h2 span{color:#009b73}
 .section-heading>p{max-width:370px;margin:0 0 3px;color:#62778e;font-size:11px;line-height:1.8}
 .product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
-.product-card{display:flex;flex-direction:column;align-items:stretch;min-width:0;min-height:326px;padding:23px;text-align:left;border:1px solid #e1e9f1;border-radius:20px;background:#fff;color:#10243d;box-shadow:0 7px 22px rgba(23,54,86,.035);cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
+.product-card{position:relative;display:flex;flex-direction:column;align-items:stretch;min-width:0;min-height:326px;padding:23px;text-align:left;border:1px solid #e1e9f1;border-radius:20px;background:#fff;color:#10243d;box-shadow:0 7px 22px rgba(23,54,86,.035);cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}.product-card:before{content:"";position:absolute;top:0;left:23px;right:23px;height:3px;border-radius:0 0 4px 4px;background:linear-gradient(90deg,#1769ce,#009b73);opacity:.8}
 .product-card:hover,.product-card[aria-pressed=true]{transform:translateY(-3px);border-color:#89cbb5;box-shadow:0 14px 30px rgba(23,54,86,.09)}
 .product-icon{width:45px;height:45px;margin-bottom:17px;font-size:23px}
 .product-tag{color:#708298;font-size:9px;font-weight:800;letter-spacing:1.5px}
