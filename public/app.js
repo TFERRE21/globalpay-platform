@@ -43,3 +43,13 @@ function setupAccountModal(){
  document.addEventListener("keydown",event=>{if(event.key==="Escape"&&modal.classList.contains("open"))closeModal();});
 }
 setupAccountModal();
+
+function setupAccountModal(){
+ const modal=document.querySelector("#account-modal"),open=document.querySelector("#account-open"),close=document.querySelector("#account-close"),backdrop=document.querySelector("#account-close-backdrop");
+ if(!modal||!open)return;
+ const closeModal=()=>{modal.classList.remove("open");modal.setAttribute("aria-hidden","true");document.body.classList.remove("account-modal-open");open.focus();};
+ const openModal=(event)=>{event?.preventDefault();modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.classList.add("account-modal-open");};
+ open.addEventListener("click",openModal);close?.addEventListener("click",closeModal);backdrop?.addEventListener("click",closeModal);
+ document.addEventListener("keydown",event=>{if(event.key==="Escape"&&modal.classList.contains("open"))closeModal();});
+}
+setupAccountModal();
