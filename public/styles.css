@@ -281,3 +281,40 @@ body{background:#f5f8fc}
  .footer{grid-template-columns:1fr;padding-inline:16px}.footer-links{justify-content:flex-start}
 }
 @media(max-width:420px){.product-grid{grid-template-columns:1fr}.product-art{min-height:95px}.product-card h3,.product-card p{min-height:0}.product-card h3{font-size:14px}.product-card p{font-size:9px}}
+
+
+/* Full-width stretch pass: make the page span the viewport like the supplied long reference screenshot. */
+html,body{width:100%;max-width:none;overflow-x:hidden}
+main{width:100%;max-width:none;margin:0}
+.topbar{width:100%;padding-left:clamp(16px,3.8vw,58px);padding-right:clamp(16px,3.8vw,58px)}
+.hero{width:100%;max-width:none;margin:0;padding-left:max(5vw,calc((100vw - 1280px)/2));padding-right:max(5vw,calc((100vw - 1280px)/2));}
+.trust-strip{width:100%;max-width:none;margin:0;padding-left:max(4vw,calc((100vw - 1260px)/2));padding-right:max(4vw,calc((100vw - 1260px)/2));border-radius:0}
+.section{width:100%;max-width:none;padding-left:max(4vw,calc((100vw - 1260px)/2));padding-right:max(4vw,calc((100vw - 1260px)/2))}
+.benefits-grid{width:100%;max-width:none;padding-left:max(4vw,calc((100vw - 1260px)/2));padding-right:max(4vw,calc((100vw - 1260px)/2))}
+.testimonials-inner{width:100%;max-width:none;padding-left:max(4vw,calc((100vw - 1260px)/2));padding-right:max(4vw,calc((100vw - 1260px)/2))}
+.final-cta{width:100%;max-width:none;padding-left:max(4vw,calc((100vw - 1260px)/2));padding-right:max(4vw,calc((100vw - 1260px)/2))}
+.security-section{width:calc(100% - 8vw);max-width:1260px}
+.faq{width:100%;max-width:none;padding-left:max(4vw,calc((100vw - 900px)/2));padding-right:max(4vw,calc((100vw - 900px)/2))}
+.footer{width:100%;padding-left:clamp(18px,4vw,60px);padding-right:clamp(18px,4vw,60px)}
+@media(min-width:1400px){
+ .hero{grid-template-columns:.9fr 1.1fr;gap:clamp(40px,5vw,90px);padding-top:38px;padding-bottom:40px}
+ .hero-visual{height:390px}
+ .section{padding-top:42px;padding-bottom:44px}
+ .product-grid{gap:16px}
+ .product-content{padding:17px}
+ .product-card h3{font-size:14px;min-height:38px}
+ .product-card p{font-size:10px;min-height:42px}
+ .product-card li{font-size:9px}
+ .product-art{min-height:108px}
+ .benefits-grid{padding-top:23px;padding-bottom:23px}
+ .how-section{padding-top:40px;padding-bottom:45px}
+ .testimonials-inner{padding-top:45px;padding-bottom:45px;gap:16px}
+ .testimonial-card{padding:20px 17px 15px}
+ .final-cta{padding-top:42px;padding-bottom:42px}
+}
+@media(max-width:760px){
+ .hero,.section,.benefits-grid,.testimonials-inner,.final-cta{padding-left:16px;padding-right:16px}
+ .trust-strip{padding-left:12px;padding-right:12px}
+ .security-section{width:calc(100% - 24px)}
+ .faq{padding-left:16px;padding-right:16px}
+}
