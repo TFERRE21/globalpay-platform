@@ -96,3 +96,38 @@ html[data-theme="dark"]{color-scheme:dark;--bg:#071426;--ink:#f4f7fb;--muted:#b2
  .trust-icon{width:30px!important;height:30px!important;flex-basis:30px!important;font-size:15px!important}
  .trust-strip strong{font-size:9px!important}.trust-strip small{font-size:8px!important}
 }
+
+/* CrediViva brand and hero refinements requested from the visual reference */
+.topbar{height:76px!important;padding-inline:clamp(22px,4.5vw,78px)!important}
+.brand{gap:11px!important}
+.brand-mark{display:grid!important;place-items:center!important;width:56px!important;height:50px!important;flex:0 0 56px!important;padding:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;clip-path:none!important;font-size:0!important;overflow:visible!important}
+.brand-mark:before,.brand-mark:after{display:none!important;content:none!important}
+.brand-mark svg{display:block;width:100%;height:100%;filter:drop-shadow(0 5px 8px #2869ff20)}
+.brand-name{font-size:25px!important;letter-spacing:-.8px!important}
+.brand-name small{font-size:7px!important;letter-spacing:.8px!important}
+.topbar nav{gap:clamp(12px,1.7vw,26px)!important}
+.topbar nav a{font-size:11px!important}
+.hero{min-height:clamp(480px,43vw,650px)!important;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)!important;gap:clamp(32px,4.2vw,68px)!important;padding:clamp(38px,4.3vw,65px) clamp(30px,6.3vw,112px) clamp(36px,4vw,58px)!important}
+.hero-copy{max-width:680px!important}
+.hero .eyebrow{font-size:12px!important;letter-spacing:2px!important;margin-bottom:20px!important}
+.hero h1{font-size:clamp(56px,5.4vw,86px)!important;line-height:.94!important;letter-spacing:-4px!important;margin-bottom:20px!important}
+.hero-text{font-size:clamp(14px,1.12vw,17px)!important;line-height:1.65!important;margin-bottom:20px!important;max-width:600px!important}
+.hero-benefits{gap:13px 17px!important;margin:20px 0 24px!important}
+.hero-benefits span{font-size:clamp(10px,.85vw,13px)!important;gap:8px!important}
+.hero-benefits i{width:27px!important;height:27px!important;font-size:13px!important}
+.hero-cta{min-height:58px!important;min-width:290px!important;padding:16px 28px!important;font-size:15px!important}
+.microcopy{font-size:10px!important;line-height:1.65!important;margin-top:14px!important}
+.hero-visual{height:clamp(340px,32vw,515px)!important;border-radius:27px 27px 75px 27px!important;box-shadow:0 28px 55px #153b6825!important}
+.hero-photo{object-fit:cover!important;object-position:center 45%!important}
+.floating-card{padding:15px 17px!important;gap:12px!important;border-radius:17px!important}
+.floating-card strong{font-size:12px!important}.floating-card small{font-size:10px!important}
+.float-icon{width:43px!important;height:43px!important;flex-basis:43px!important;font-size:21px!important}
+.floating-top{top:18px!important;right:18px!important}
+.floating-bottom{left:-26px!important;bottom:16px!important;max-width:330px!important}
+.round-arrow{width:39px!important;height:39px!important;flex-basis:39px!important}
+.trust-strip{padding:17px clamp(24px,6vw,100px)!important}
+.trust-strip article{padding:10px clamp(10px,2vw,30px)!important;gap:13px!important}
+.trust-icon{width:47px!important;height:47px!important;flex-basis:47px!important;border-radius:50%!important;font-size:22px!important}
+.trust-strip strong{font-size:13px!important}.trust-strip small{font-size:11px!important}
+@media(max-width:1100px){.topbar{height:68px!important;padding-inline:18px!important}.brand-mark{width:43px!important;height:40px!important;flex-basis:43px!important}.brand-name{font-size:21px!important}.topbar nav{gap:9px!important}.topbar nav a{font-size:8px!important}.hero{min-height:430px!important;padding:30px 28px!important;gap:22px!important}.hero h1{font-size:clamp(43px,5.2vw,60px)!important}.hero-visual{height:320px!important}.hero-cta{min-width:0!important}.floating-bottom{left:-12px!important}}
+@media(max-width:760px){.topbar{height:64px!important;padding:0 14px!important}.brand-mark{width:38px!important;height:36px!important;flex-basis:38px!important}.brand-name{font-size:18px!important}.brand-name small{font-size:5px!important}.hero{min-height:0!important;grid-template-columns:1fr!important;padding:30px 17px 32px!important;gap:24px!important}.hero .eyebrow{font-size:10px!important;margin-bottom:14px!important}.hero h1{font-size:clamp(48px,10vw,66px)!important;letter-spacing:-2.8px!important;margin-bottom:15px!important}.hero-text{font-size:13px!important}.hero-benefits{gap:9px!important;margin:15px 0 19px!important}.hero-benefits span{font-size:9px!important}.hero-benefits i{width:22px!important;height:22px!important;font-size:11px!important}.hero-cta{width:100%!important;min-width:0!important;min-height:48px!important;font-size:12px!important}.microcopy{font-size:9px!important}.hero-visual{height:clamp(260px,72vw,390px)!important;border-radius:20px 20px 48px 20px!important}.floating-card{padding:10px 11px!important;gap:8px!important;border-radius:12px!important}.floating-card strong{font-size:9px!important}.floating-card small{font-size:8px!important}.float-icon{width:30px!important;height:30px!important;flex-basis:30px!important;font-size:15px!important}.floating-bottom{left:8px!important;right:8px!important;bottom:8px!important;max-width:none!important}.round-arrow{width:28px!important;height:28px!important;flex-basis:28px!important}.trust-strip{padding:10px!important}.trust-icon{width:30px!important;height:30px!important;flex-basis:30px!important;font-size:15px!important}.trust-strip strong{font-size:9px!important}.trust-strip small{font-size:8px!important}}
