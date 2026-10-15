@@ -39,3 +39,13 @@ async function registerPush(){
 }
 $("#enable-push")?.addEventListener("click",registerPush);
 $("#test-push")?.addEventListener("click",async()=>{const notice=$("#push-notice");notice.hidden=false;notice.textContent="Enviando teste...";try{const data=await api("/api/notifications/test",{method:"POST",body:"{}"});notice.textContent=data.message;}catch(error){notice.textContent=error.message;}});
+
+const forgotButton=$("#forgot-password"),forgotForm=$("#forgot-form"),resetForm=$("#reset-form"),backToLogin=$("#back-to-login"),changePasswordForm=$("#change-password-form");
+function hideAuthForms(){[registerForm,loginForm,forgotForm,resetForm].forEach(f=>{if(f)f.hidden=true;});}
+forgotButton?.addEventListener("click",()=>{hideAuthForms();forgotForm.hidden=false;notice.hidden=true;});
+backToLogin?.addEventListener("click",()=>setTab("login"));
+forgotForm?.addEventListener("submit",async e=>{e.preventDefault();const email=new FormData(forgotForm).get("email");try{const data=await api("/api/auth/forgot-password",{method:"POST",body:JSON.stringify({email})});showNotice(notice,data.message);forgotForm.reset();}catch(err){showNotice(notice,err.message);}});
+const resetToken=new URLSearchParams(location.search).get("reset");
+if(resetToken){hideAuthForms();if(resetForm){resetForm.hidden=false;notice.hidden=false;notice.textContent="Crie sua nova senha. O link de recuperação expira em 30 minutos.";}}
+resetForm?.addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(resetForm),password=f.get("password"),confirm=f.get("confirmPassword");if(password!==confirm){showNotice(notice,"As senhas não são iguais.");return;}try{const data=await api("/api/auth/reset-password",{method:"POST",body:JSON.stringify({token:resetToken,password})});showNotice(notice,data.message);resetForm.hidden=true;history.replaceState({},"",location.pathname);setTab("login");}catch(err){showNotice(notice,err.message);}});
+changePasswordForm?.addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(changePasswordForm),currentPassword=f.get("currentPassword"),newPassword=f.get("newPassword");try{const data=await api("/api/auth/change-password",{method:"POST",body:JSON.stringify({currentPassword,newPassword})});showNotice($("#password-notice"),data.message);changePasswordForm.reset();}catch(err){showNotice($("#password-notice"),err.message);}});
