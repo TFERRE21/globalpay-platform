@@ -315,3 +315,35 @@ html[data-theme="dark"] .lender-chip{background:#10243a;border-color:#263b52;col
 @media(max-width:760px){.account-link{padding:8px 10px;font-size:9px}.support-launcher{right:12px;bottom:12px;padding:12px 16px}.support-widget{right:10px;bottom:72px}.account-form{grid-template-columns:1fr}.account-form .full{grid-column:auto}.account-page{padding:20px 12px 40px}}
 
 [hidden]{display:none!important}
+
+
+/* Mobile support chat fix: compact viewport, safe spacing and readable controls */
+.support-widget{
+  width:min(370px,calc(100vw - 32px));
+  height:min(500px,calc(100dvh - 145px));
+  max-height:calc(100dvh - 145px);
+  right:16px;
+  bottom:88px;
+}
+.support-log{min-height:0;overscroll-behavior:contain}
+.support-form{flex-shrink:0;background:#fff;align-items:center}
+.support-form input{height:48px}
+.support-form button{height:48px;min-width:78px}
+.support-launcher{bottom:18px;right:16px}
+@media(max-width:760px){
+ .support-widget{
+  right:10px!important;left:10px!important;bottom:78px!important;
+  width:auto!important;height:min(440px,calc(100dvh - 170px))!important;
+  max-height:calc(100dvh - 170px)!important;border-radius:18px!important;
+ }
+ .support-head{padding:13px 15px}
+ .support-log{padding:11px;gap:8px}
+ .support-bubble{font-size:13px;padding:10px 12px}
+ .support-form{padding:9px;gap:7px}
+ .support-form input{min-width:0;width:0;flex:1;height:46px;padding:10px;font-size:13px}
+ .support-form button{height:46px;min-width:72px;padding:0 12px}
+ .support-launcher{right:12px!important;bottom:12px!important;padding:12px 15px;font-size:13px}
+}
+@media(max-height:700px){
+ .support-widget{height:calc(100dvh - 130px);max-height:calc(100dvh - 130px)}
+}
