@@ -56,7 +56,8 @@ async function ensureSchema() {
       status_note TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
     CREATE INDEX IF NOT EXISTS cv_loan_applications_user_idx ON cv_loan_applications(user_id, created_at DESC);
-    CREATE TABLE IF NOT EXISTS cv_push_subscriptions (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL REFERENCES cv_users(id) ON DELETE CASCADE, endpoint TEXT NOT NULL UNIQUE, subscription_json JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());\n    CREATE TABLE IF NOT EXISTS cv_password_resets (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL REFERENCES cv_users(id) ON DELETE CASCADE, token_hash TEXT NOT NULL UNIQUE, expires_at TIMESTAMPTZ NOT NULL, used_at TIMESTAMPTZ, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+    CREATE TABLE IF NOT EXISTS cv_push_subscriptions (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL REFERENCES cv_users(id) ON DELETE CASCADE, endpoint TEXT NOT NULL UNIQUE, subscription_json JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+    CREATE TABLE IF NOT EXISTS cv_password_resets (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL REFERENCES cv_users(id) ON DELETE CASCADE, token_hash TEXT NOT NULL UNIQUE, expires_at TIMESTAMPTZ NOT NULL, used_at TIMESTAMPTZ, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
     CREATE TABLE IF NOT EXISTS cv_support_messages (
       id BIGSERIAL PRIMARY KEY, user_id BIGINT REFERENCES cv_users(id) ON DELETE SET NULL,
       visitor_email VARCHAR(254), role VARCHAR(12) NOT NULL, message TEXT NOT NULL,
@@ -152,7 +153,8 @@ app.post("/api/auth/change-password",auth,async(req,res)=>{
   res.json({success:true,message:"Senha trocada com sucesso."});
  }catch(error){console.error("[CrediViva change password]",error);res.status(500).json({success:false,message:"Não foi possível trocar a senha."});}
 });
-\napp.post("/api/auth/register",async(req,res)=>{
+
+app.post("/api/auth/register",async(req,res)=>{
  try {
   const name=String(req.body?.name||"").trim(), email=String(req.body?.email||"").trim().toLowerCase(), password=String(req.body?.password||""), phone=normalizePhone(req.body?.phone);
   const whatsappOptIn=req.body?.whatsappOptIn===true;
