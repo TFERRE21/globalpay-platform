@@ -59,3 +59,28 @@ document.querySelector("#continue-application")?.addEventListener("click", () =>
     ".<br>Prazo: " + urgency.value +
     ".<br><br>Nenhuma solicitação foi enviada, nenhum CPF foi consultado e nenhum dado foi armazenado. A contratação será habilitada somente após integração e validação de um parceiro financeiro.";
 });
+
+
+const themeToggle = document.querySelector("#theme-toggle");
+const themeIcon = document.querySelector("#theme-icon");
+const themeLabel = document.querySelector(".theme-label");
+const themeMeta = document.querySelector("#theme-color-meta");
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const light = theme === "light";
+  if (themeIcon) themeIcon.textContent = light ? "☾" : "☀";
+  if (themeLabel) themeLabel.textContent = light ? "Tema escuro" : "Tema claro";
+  if (themeToggle) themeToggle.setAttribute("aria-label", light ? "Ativar tema escuro" : "Ativar tema claro");
+  if (themeMeta) themeMeta.setAttribute("content", light ? "#f4f7fb" : "#071426");
+  try { localStorage.setItem("globalpay-theme", theme); } catch (_) {}
+}
+let initialTheme = "dark";
+try {
+  const savedTheme = localStorage.getItem("globalpay-theme");
+  if (savedTheme === "light" || savedTheme === "dark") initialTheme = savedTheme;
+  else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) initialTheme = "light";
+} catch (_) {}
+setTheme(initialTheme);
+themeToggle?.addEventListener("click", () => {
+  setTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light");
+});
