@@ -105,7 +105,7 @@ app.get("/api/status",(_req,res)=>res.json({databaseConfigured:!!(process.env.NF
 app.post("/api/auth/forgot-password",async(req,res)=>{
  try{
   const email=String(req.body?.email||"").trim().toLowerCase();
-  if(!/^\\S+@\\S+\\.\\S+$/.test(email))return res.status(400).json({success:false,message:"Informe um e-mail válido."});
+  if(!/^\S+@\S+\.\S+$/.test(email))return res.status(400).json({success:false,message:"Informe um e-mail válido."});
   const userResult=await pool.query("SELECT id,email,name FROM cv_users WHERE email=$1 AND active=TRUE",[email]);
   // Always return the same public message to avoid disclosing whether an account exists.
   const message="Se houver uma conta associada a esse e-mail, enviaremos as instruções de recuperação.";
@@ -113,7 +113,7 @@ app.post("/api/auth/forgot-password",async(req,res)=>{
    const user=userResult.rows[0], rawToken=crypto.randomBytes(32).toString("hex"), tokenHash=crypto.createHash("sha256").update(rawToken).digest("hex");
    await pool.query("UPDATE cv_password_resets SET used_at=NOW() WHERE user_id=$1 AND used_at IS NULL",[user.id]);
    await pool.query("INSERT INTO cv_password_resets(user_id,token_hash,expires_at) VALUES($1,$2,NOW()+INTERVAL '30 minutes')",[user.id,tokenHash]);
-   const base=String(process.env.PUBLIC_BASE_URL||"").replace(/\\/$/,"");
+   const base=String(process.env.PUBLIC_BASE_URL||"").replace(/\/$/,"");
    const resetUrl=base+"/conta.html?reset="+encodeURIComponent(rawToken);
    const apiKey=process.env.RESEND_API_KEY, from=process.env.RESEND_FROM_EMAIL;
    if(apiKey&&from&&base){
