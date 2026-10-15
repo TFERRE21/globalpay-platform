@@ -33,3 +33,13 @@ function addSupportChat(){
  form.addEventListener("submit",async e=>{e.preventDefault();const message=input.value.trim();if(!message)return;const user=document.createElement("div");user.className="support-bubble user";user.textContent=message;log.append(user);input.value="";const wait=document.createElement("div");wait.className="support-bubble";wait.textContent="Só um instante...";log.append(wait);log.scrollTop=log.scrollHeight;try{const r=await fetch("/api/support/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message})});const data=await r.json();wait.textContent=data.reply||data.message||"Atendimento temporariamente indisponível.";}catch(_){wait.textContent="Não foi possível conectar ao suporte agora.";}log.scrollTop=log.scrollHeight;});
 }
 addSupportChat();
+
+function setupAccountModal(){
+ const modal=document.querySelector("#account-modal"),open=document.querySelector("#account-open"),close=document.querySelector("#account-close"),backdrop=document.querySelector("#account-close-backdrop");
+ if(!modal||!open)return;
+ const closeModal=()=>{modal.classList.remove("open");modal.setAttribute("aria-hidden","true");document.body.classList.remove("account-modal-open");open.focus();};
+ const openModal=(event)=>{event?.preventDefault();modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.classList.add("account-modal-open");};
+ open.addEventListener("click",openModal);close?.addEventListener("click",closeModal);backdrop?.addEventListener("click",closeModal);
+ document.addEventListener("keydown",event=>{if(event.key==="Escape"&&modal.classList.contains("open"))closeModal();});
+}
+setupAccountModal();
