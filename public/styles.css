@@ -276,3 +276,30 @@ body .trust-strip{margin:0!important;border-radius:0!important}
  body .hero#inicio .floating-top{top:auto!important;right:12px!important;bottom:100px!important;max-width:270px!important}
  body .hero#inicio .floating-bottom{left:12px!important;right:12px!important;bottom:12px!important;max-width:none!important}
 }
+
+
+/* Animated lender discovery strip — illustrative references, not confirmed partners */
+.lenders-section{padding:34px 0 27px;background:#fff;border-bottom:1px solid #e3ebf5;overflow:hidden}
+.lenders-heading{max-width:980px;margin:0 auto 20px;padding:0 22px;text-align:center}
+.lenders-heading .eyebrow{margin-bottom:8px}
+.lenders-heading h2{margin:0 0 8px;font:800 clamp(23px,3vw,34px)/1.15 Manrope,sans-serif;letter-spacing:-1px;color:#10294d}
+.lenders-heading h2 span{background:linear-gradient(95deg,#2869ff,#8245f5 65%,#ed4caa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lenders-heading p{margin:0;color:#61748f;font-size:13px}
+.lenders-window{overflow:hidden;width:100%;padding:8px 0 12px;mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.lenders-track{display:flex;align-items:center;gap:18px;width:max-content;animation:lender-marquee 34s linear infinite}
+.lenders-window:hover .lenders-track{animation-play-state:paused}
+.lender-chip{display:inline-flex;align-items:center;gap:11px;min-width:205px;padding:14px 18px;border:1px solid #e2eaf4;border-radius:16px;background:linear-gradient(145deg,#fff,#f7faff);box-shadow:0 8px 22px #183c6410;color:#23405f;font:800 14px Manrope,sans-serif;white-space:nowrap}
+.lender-symbol{display:grid;place-items:center;width:35px;height:35px;border-radius:11px;background:#edf3ff;color:#2869ff;font-size:21px}
+.lender-caixa .lender-symbol{background:#e9f5ff;color:#0878c9}
+.lender-itau .lender-symbol{background:#fff2dd;color:#ed7d16}
+.lender-bradesco .lender-symbol{background:#ffedf0;color:#cc1836}
+.lender-santander .lender-symbol{background:#fff0ee;color:#e33b30}
+.lender-sicredi .lender-symbol{background:#e8f8ee;color:#21864c}
+.lenders-disclaimer{max-width:1000px;margin:6px auto 0;padding:0 22px;text-align:center;color:#718198;font-size:10px;line-height:1.6}
+@keyframes lender-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.lenders-track{animation:none}}
+@media(max-width:760px){.lenders-section{padding:26px 0 20px}.lenders-heading h2{font-size:25px}.lenders-heading p{font-size:12px;padding-inline:8px}.lender-chip{min-width:174px;padding:11px 13px;font-size:12px}.lender-symbol{width:31px;height:31px}.lenders-track{gap:12px;animation-duration:27s}.lenders-disclaimer{font-size:9px}}
+html[data-theme="dark"] .lenders-section{background:#0a1a2d;border-color:#20364d}
+html[data-theme="dark"] .lenders-heading h2{color:#f4f7fb}
+html[data-theme="dark"] .lenders-heading p,html[data-theme="dark"] .lenders-disclaimer{color:#b2c0d1}
+html[data-theme="dark"] .lender-chip{background:#10243a;border-color:#263b52;color:#f4f7fb}
