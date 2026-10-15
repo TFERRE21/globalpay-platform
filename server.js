@@ -81,6 +81,20 @@ async function notifyWhatsApp(phone, title, body) {
     return {sent:true};
   } catch(error){console.error("[CrediViva WhatsApp]",error.message);return {sent:false,reason:"request_error"};}
 }
+let schemaReady = null;
+async function requireDatabase(req,res,next) {
+  try {
+    if (!schemaReady) schemaReady = ensureSchema();
+    await schemaReady;
+    next();
+  } catch (error) {
+    schemaReady = null;
+    console.error("[CrediViva database]", error.message || error);
+    res.status(503).json({success:false,message:"O banco de dados ainda não está disponível. Configure NF_POSTGRESQL_POSTGRES_URI ou DATABASE_URL no servidor."});
+  }
+}
+app.use(["/api/auth","/api/loans","/api/admin/loans"], requireDatabase);
+
 app.get("/api/health",(_req,res)=>res.json({status:"ok",app:"CrediViva",mode:"application-tracking",financialProviderConnected:false,loanApprovalAutomatic:false}));
 app.get("/api/status",(_req,res)=>res.json({databaseConfigured:!!(process.env.NF_POSTGRESQL_POSTGRES_URI||process.env.DATABASE_URL),whatsappConfigured:!!(process.env.WHATSAPP_ACCESS_TOKEN&&process.env.WHATSAPP_PHONE_NUMBER_ID),financialProviderConnected:false,loanApprovalAutomatic:false}));
 
