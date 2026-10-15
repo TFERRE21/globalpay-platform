@@ -205,3 +205,74 @@ html[data-theme="dark"]{color-scheme:dark;--bg:#071426;--ink:#f4f7fb;--muted:#b2
  .floating-top{top:auto!important;right:12px!important;bottom:94px!important;max-width:260px!important}
  .floating-bottom{right:12px!important;left:12px!important;bottom:12px!important;max-width:none!important}
 }
+
+
+/* FINAL OVERRIDE v19 — hero follows the approved full-bleed reference */
+body .hero#inicio{
+  display:block!important;
+  position:relative!important;
+  isolation:isolate!important;
+  width:100%!important;
+  min-height:620px!important;
+  height:auto!important;
+  padding:76px clamp(24px,6.7vw,112px) 64px!important;
+  margin:0!important;
+  overflow:hidden!important;
+  background:#10294d!important;
+}
+body .hero#inicio .hero-visual{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:-1!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:100%!important;
+  margin:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+body .hero#inicio .hero-photo{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  object-fit:cover!important;
+  object-position:center 43%!important;
+  border-radius:0!important;
+}
+body .hero#inicio .hero-gradient{
+  display:block!important;
+  position:absolute!important;
+  inset:0!important;
+  border-radius:0!important;
+  background:linear-gradient(90deg,rgba(6,23,49,.91) 0%,rgba(6,23,49,.83) 32%,rgba(6,23,49,.48) 58%,rgba(6,23,49,.12) 100%),linear-gradient(0deg,rgba(6,23,49,.28),transparent 48%)!important;
+}
+body .hero#inicio .hero-copy{
+  display:block!important;
+  position:relative!important;
+  z-index:2!important;
+  width:min(720px,58%)!important;
+  max-width:720px!important;
+  margin:0!important;
+  justify-self:auto!important;
+}
+body .hero#inicio .eyebrow{color:#d4c5ff!important}
+body .hero#inicio h1{color:#fff!important}
+body .hero#inicio h1 span{background:linear-gradient(90deg,#8bd4ff,#b6a0ff 60%,#ff9cdd)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+body .hero#inicio .hero-text,body .hero#inicio .microcopy{color:#f0f5ff!important}
+body .hero#inicio .hero-benefits span{color:#fff!important}
+body .hero#inicio .floating-top{top:30px!important;right:clamp(18px,5vw,76px)!important}
+body .hero#inicio .floating-bottom{left:auto!important;right:clamp(18px,5vw,76px)!important;bottom:30px!important;max-width:360px!important}
+body .trust-strip{margin:0!important;border-radius:0!important}
+@media(min-width:1500px){body .hero#inicio{min-height:720px!important;padding-top:100px!important}}
+@media(max-width:760px){
+ body .hero#inicio{min-height:680px!important;padding:42px 18px 220px!important}
+ body .hero#inicio .hero-copy{width:100%!important;max-width:100%!important}
+ body .hero#inicio .hero-photo{object-position:58% center!important}
+ body .hero#inicio .hero-gradient{background:linear-gradient(90deg,rgba(6,23,49,.86),rgba(6,23,49,.55)),linear-gradient(0deg,rgba(6,23,49,.62),transparent 65%)!important}
+ body .hero#inicio .floating-top{top:auto!important;right:12px!important;bottom:100px!important;max-width:270px!important}
+ body .hero#inicio .floating-bottom{left:12px!important;right:12px!important;bottom:12px!important;max-width:none!important}
+}
