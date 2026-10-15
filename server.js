@@ -56,7 +56,7 @@ async function ensureSchema() {
       status_note TEXT, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
     CREATE INDEX IF NOT EXISTS cv_loan_applications_user_idx ON cv_loan_applications(user_id, created_at DESC);
-    CREATE TABLE IF NOT EXISTS cv_push_subscriptions (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL REFERENCES cv_users(id) ON DELETE CASCADE, endpoint TEXT NOT NULL UNIQUE, subscription_json JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+    CREATE TABLE IF NOT EXISTS cv_push_subscriptions (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL REFERENCES cv_users(id) ON DELETE CASCADE, endpoint TEXT NOT NULL UNIQUE, subscription_json JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());\n    CREATE TABLE IF NOT EXISTS cv_password_resets (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL REFERENCES cv_users(id) ON DELETE CASCADE, token_hash TEXT NOT NULL UNIQUE, expires_at TIMESTAMPTZ NOT NULL, used_at TIMESTAMPTZ, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
     CREATE TABLE IF NOT EXISTS cv_support_messages (
       id BIGSERIAL PRIMARY KEY, user_id BIGINT REFERENCES cv_users(id) ON DELETE SET NULL,
       visitor_email VARCHAR(254), role VARCHAR(12) NOT NULL, message TEXT NOT NULL,
@@ -100,7 +100,59 @@ app.use(["/api/auth","/api/loans","/api/admin/loans"], requireDatabase);
 app.get("/api/health",(_req,res)=>res.json({status:"ok",app:"CrediViva",mode:"application-tracking",financialProviderConnected:false,loanApprovalAutomatic:false}));
 app.get("/api/status",(_req,res)=>res.json({databaseConfigured:!!(process.env.NF_POSTGRESQL_POSTGRES_URI||process.env.DATABASE_URL),whatsappConfigured:!!(process.env.WHATSAPP_ACCESS_TOKEN&&process.env.WHATSAPP_PHONE_NUMBER_ID),financialProviderConnected:false,loanApprovalAutomatic:false}));
 
-app.post("/api/auth/register",async(req,res)=>{
+
+app.post("/api/auth/forgot-password",async(req,res)=>{
+ try{
+  const email=String(req.body?.email||"").trim().toLowerCase();
+  if(!/^\\S+@\\S+\\.\\S+$/.test(email))return res.status(400).json({success:false,message:"Informe um e-mail válido."});
+  const userResult=await pool.query("SELECT id,email,name FROM cv_users WHERE email=$1 AND active=TRUE",[email]);
+  // Always return the same public message to avoid disclosing whether an account exists.
+  const message="Se houver uma conta associada a esse e-mail, enviaremos as instruções de recuperação.";
+  if(userResult.rows.length){
+   const user=userResult.rows[0], rawToken=crypto.randomBytes(32).toString("hex"), tokenHash=crypto.createHash("sha256").update(rawToken).digest("hex");
+   await pool.query("UPDATE cv_password_resets SET used_at=NOW() WHERE user_id=$1 AND used_at IS NULL",[user.id]);
+   await pool.query("INSERT INTO cv_password_resets(user_id,token_hash,expires_at) VALUES($1,$2,NOW()+INTERVAL '30 minutes')",[user.id,tokenHash]);
+   const base=String(process.env.PUBLIC_BASE_URL||"").replace(/\\/$/,"");
+   const resetUrl=base+"/conta.html?reset="+encodeURIComponent(rawToken);
+   const apiKey=process.env.RESEND_API_KEY, from=process.env.RESEND_FROM_EMAIL;
+   if(apiKey&&from&&base){
+    const mail=await fetch("https://api.resend.com/emails",{method:"POST",headers:{Authorization:"Bearer "+apiKey,"Content-Type":"application/json"},body:JSON.stringify({from,to:[user.email],subject:"Recuperação de senha — CrediViva",html:"<div style='font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#17365d'><h2>Recuperar acesso à CrediViva</h2><p>Olá, "+String(user.name).replace(/[&<>"]/g,"")+"!</p><p>Recebemos um pedido para trocar a senha da sua conta. O link é válido por 30 minutos.</p><p><a href='"+resetUrl+"' style='display:inline-block;background:#2869ff;color:#fff;padding:13px 20px;border-radius:10px;text-decoration:none'>Criar nova senha</a></p><p>Se você não pediu essa alteração, ignore esta mensagem.</p></div>"})});
+    if(!mail.ok)console.error("[CrediViva reset email]",await mail.text());
+   }else console.warn("[CrediViva reset] Configure RESEND_API_KEY, RESEND_FROM_EMAIL e PUBLIC_BASE_URL para habilitar e-mails.");
+  }
+  res.json({success:true,message});
+ }catch(error){console.error("[CrediViva forgot password]",error);res.status(500).json({success:false,message:"Não foi possível processar a solicitação agora."});}
+});
+app.post("/api/auth/reset-password",async(req,res)=>{
+ try{
+  const token=String(req.body?.token||""), password=String(req.body?.password||"");
+  if(token.length<32||password.length<8)return res.status(400).json({success:false,message:"Link inválido ou senha com menos de 8 caracteres."});
+  const hash=crypto.createHash("sha256").update(token).digest("hex");
+  const r=await pool.query("SELECT id,user_id FROM cv_password_resets WHERE token_hash=$1 AND used_at IS NULL AND expires_at>NOW() LIMIT 1",[hash]);
+  if(!r.rows.length)return res.status(400).json({success:false,message:"Este link expirou ou já foi usado. Solicite uma nova recuperação."});
+  const passwordHash=await bcrypt.hash(password,12);
+  await pool.query("BEGIN");
+  try{
+   await pool.query("UPDATE cv_users SET password_hash=$1,updated_at=NOW() WHERE id=$2",[passwordHash,r.rows[0].user_id]);
+   await pool.query("UPDATE cv_password_resets SET used_at=NOW() WHERE user_id=$1 AND used_at IS NULL",[r.rows[0].user_id]);
+   await pool.query("COMMIT");
+  }catch(e){await pool.query("ROLLBACK");throw e;}
+  res.json({success:true,message:"Senha alterada. Você já pode entrar com a nova senha."});
+ }catch(error){console.error("[CrediViva reset password]",error);res.status(500).json({success:false,message:"Não foi possível alterar a senha."});}
+});
+app.post("/api/auth/change-password",auth,async(req,res)=>{
+ try{
+  const currentPassword=String(req.body?.currentPassword||""), newPassword=String(req.body?.newPassword||"");
+  if(newPassword.length<8)return res.status(400).json({success:false,message:"A nova senha precisa ter pelo menos 8 caracteres."});
+  const r=await pool.query("SELECT password_hash FROM cv_users WHERE id=$1 AND active=TRUE",[req.user.id]);
+  if(!r.rows.length||!(await bcrypt.compare(currentPassword,r.rows[0].password_hash)))return res.status(400).json({success:false,message:"A senha atual não confere."});
+  const hash=await bcrypt.hash(newPassword,12);
+  await pool.query("UPDATE cv_users SET password_hash=$1,updated_at=NOW() WHERE id=$2",[hash,req.user.id]);
+  await pool.query("UPDATE cv_password_resets SET used_at=NOW() WHERE user_id=$1 AND used_at IS NULL",[req.user.id]);
+  res.json({success:true,message:"Senha trocada com sucesso."});
+ }catch(error){console.error("[CrediViva change password]",error);res.status(500).json({success:false,message:"Não foi possível trocar a senha."});}
+});
+\napp.post("/api/auth/register",async(req,res)=>{
  try {
   const name=String(req.body?.name||"").trim(), email=String(req.body?.email||"").trim().toLowerCase(), password=String(req.body?.password||""), phone=normalizePhone(req.body?.phone);
   const whatsappOptIn=req.body?.whatsappOptIn===true;
