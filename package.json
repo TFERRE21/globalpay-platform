@@ -1,16 +1,21 @@
 {
   "name": "globalpay-platform",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "GlobalPay white-label financial services platform scaffold",
+  "description": "CrediViva loan discovery and application tracking platform",
   "type": "module",
-  "engines": { "node": ">=24" },
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
     "check": "node --check server.js"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3"
   }
 }
