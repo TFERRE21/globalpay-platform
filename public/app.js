@@ -13,7 +13,13 @@ document.querySelector("#continue-application")?.addEventListener("click",async(
  if(!selectedProduct||!amount||!urgency||!result)return;
  if(!amount.value||!urgency.value){result.hidden=false;result.textContent="Selecione a faixa de valor e quando precisa do crédito.";return;}
  const token=localStorage.getItem("crediviva-token");
- if(!token){localStorage.setItem("crediviva-pending-loan",JSON.stringify({product:selectedProduct,amount:amount.value,urgency:urgency.value}));location.href="/conta.html?cadastro=1";return;}
+ if(!token){
+  localStorage.setItem("crediviva-pending-loan",JSON.stringify({product:selectedProduct,amount:amount.value,urgency:urgency.value}));
+  const modal=document.querySelector("#account-modal"),open=document.querySelector("#account-open");
+  if(modal&&open){modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.classList.add("account-modal-open");}
+  else {result.hidden=false;result.textContent="Abra Minha conta no topo para criar seu cadastro e continuar com a solicitação.";open?.focus();}
+  return;
+ }
  try{
   const response=await fetch("/api/loans",{method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:JSON.stringify({product:products[selectedProduct].title,amount:amount.value,urgency:urgency.value})});
   const data=await response.json();if(!response.ok)throw new Error(data.message||"Não foi possível registrar.");
