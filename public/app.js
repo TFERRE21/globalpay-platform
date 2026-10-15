@@ -2,7 +2,8 @@ const year=document.querySelector("#year");if(year)year.textContent=String(new D
 const products={
  veiculo:{title:"Empréstimo com garantia de veículo",description:"Você selecionou crédito com garantia de veículo. Disponibilidade, avaliação, juros e condições dependerão de parceiro habilitado e análise do bem."},
  cartao:{title:"Crédito pelo cartão",description:"Você selecionou opções relacionadas ao cartão. A modalidade só será disponibilizada após validação do parceiro e das regras aplicáveis."},
- pessoal:{title:"Empréstimo pessoal / CLT",description:"Você selecionou crédito pessoal ou consignado CLT. A elegibilidade e as condições dependerão da análise do parceiro financeiro."}
+ pessoal:{title:"Empréstimo pessoal / CLT",description:"Você selecionou crédito pessoal ou consignado CLT. A elegibilidade e as condições dependerão da análise do parceiro financeiro."},
+ imovel:{title:"Crédito com garantia de imóvel",description:"Você selecionou crédito com garantia de imóvel. Avaliação, custos, prazos e disponibilidade dependerão de parceiro habilitado e análise do bem."}
 };
 const cards=[...document.querySelectorAll("[data-product]")],panel=document.querySelector("#selection-panel"),title=document.querySelector("#selection-title"),description=document.querySelector("#selection-description"),amount=document.querySelector("#amount"),urgency=document.querySelector("#urgency"),result=document.querySelector("#selection-result");let selectedProduct="";
 function chooseProduct(key){selectedProduct=key;const product=products[key];if(!product||!panel||!title||!description)return;title.textContent=product.title;description.textContent=product.description;panel.hidden=false;result.hidden=true;cards.forEach(card=>card.setAttribute("aria-pressed",String(card.dataset.product===key)));panel.scrollIntoView({behavior:"smooth",block:"start"});}
