@@ -470,3 +470,9 @@ body.account-modal-open{overflow:hidden}
 .account-embedded .account-card{border:0;border-radius:0;box-shadow:none;backdrop-filter:none;padding:22px 18px;min-height:100%}
 .account-embedded .account-card h1{font-size:25px!important}
 .account-embedded .support-launcher{display:none}
+
+/* Verified bank brand marks (references only, not a claim of partnership) */
+.lender-chip{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;border:1px solid #e0e8f2;background:#fff;border-radius:999px;padding:11px 18px;box-shadow:0 7px 20px #10294d0b;font-weight:800;color:#19375c}
+.lender-chip img{display:block;width:25px;height:25px;object-fit:contain}
+.lender-chip img:not([src]){display:none}
+.account-link{cursor:pointer}
