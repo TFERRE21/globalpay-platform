@@ -16,3 +16,81 @@ html[data-theme="dark"]{color-scheme:dark;--bg:#071426;--surface:#0e2035;--ink:#
 /* Layout refinement 2026-10-15: use desktop width more effectively */
 @media(min-width:1101px){.hero{gap:clamp(32px,3.2vw,48px)}.hero-photo-wrap{height:clamp(320px,29vw,410px)}.trust-strip{padding:16px 24px}.section{padding-top:24px;padding-bottom:46px}.section-heading{margin-bottom:22px}.product-card{min-height:290px;padding:19px 17px 15px}.recommend-card{padding:20px 18px 16px}.section-inner{padding-top:52px;padding-bottom:54px}.step-card{min-height:180px;padding:22px}}
 @media(max-width:700px){.section,.trust-strip,.partner-strip,.security-section{width:calc(100% - 32px)}}
+
+
+/* GLOBALPAY REDESIGN — desktop-first layout correction */
+:root{--bg:#f3f7fb;--ink:#10243d;--muted:#61768c;--line:#dce6f0;--shadow:0 14px 34px rgba(18,45,74,.08)}
+body{background:var(--bg)}
+.topbar{height:72px;padding-inline:clamp(24px,4vw,72px)}
+.hero{width:100%;max-width:1500px;padding:42px clamp(32px,6.5vw,104px) 34px;grid-template-columns:minmax(360px,.88fr) minmax(440px,1.12fr);gap:clamp(36px,5vw,76px)}
+.hero h1{font-size:clamp(54px,5.2vw,76px);letter-spacing:-3.8px;line-height:.98}
+.hero-text{font-size:14px;max-width:510px}
+.hero-photo-wrap{height:clamp(360px,32vw,470px);border-radius:28px}
+.photo-caption strong{font-size:clamp(19px,1.8vw,26px)}
+.trust-strip,.section,.partner-strip,.security-section{width:min(1320px,calc(100% - 80px))}
+.trust-strip{margin-bottom:32px;padding:19px 25px;border-radius:18px}
+.trust-strip article{padding-inline:20px}
+.trust-icon{width:43px;height:43px}
+.section{padding-top:28px;padding-bottom:54px}
+.section-heading{margin-bottom:24px}
+.section-heading h2,.faq h2{font-size:clamp(32px,3vw,42px);letter-spacing:-1.7px}
+.section-heading>p{font-size:12px;max-width:410px}
+.catalog-layout{grid-template-columns:minmax(0,1fr) 290px;gap:18px}
+.product-grid{gap:16px}
+.product-card{min-height:320px;padding:22px 20px 18px;border-radius:19px}
+.product-icon{width:43px;height:43px;font-size:22px}
+.product-card h3{font-size:15px}
+.product-card p{font-size:11px;line-height:1.7;min-height:54px}
+.product-card li{font-size:10px}
+.product-cta{padding:12px 14px;font-size:10px}
+.recommend-card{padding:22px;border-radius:19px}
+.recommend-card h3{font-size:19px}
+.recommend-card>p{font-size:11px;line-height:1.75}
+.partner-strip{margin-bottom:0;padding:18px 6px;font-size:10px}
+.how-section .section-inner{padding-top:58px;padding-bottom:62px}
+.steps{gap:18px}
+.step-card{min-height:190px;padding:25px;border-radius:18px}
+.step-card h3{font-size:17px}
+.step-card p{font-size:11px}
+.security-section{margin-top:40px;margin-bottom:45px;padding:27px 30px;border-radius:20px}
+.security-symbol{width:54px;height:54px}
+.security-section h2{font-size:25px}
+.security-section p{font-size:11px}
+.faq{max-width:900px;padding-bottom:64px}
+.faq details{padding:17px 0}
+.faq summary{font-size:13px}
+.faq details p{font-size:12px}
+.footer{padding:30px clamp(24px,4vw,72px) 22px}
+@media(max-width:1100px){
+ .hero{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);padding-inline:36px;gap:28px}
+ .hero h1{font-size:clamp(44px,5.3vw,62px)}
+ .hero-photo-wrap{height:340px}
+ .trust-strip,.section,.partner-strip,.security-section{width:calc(100% - 48px)}
+ .catalog-layout{grid-template-columns:minmax(0,1fr) 240px}
+ .product-card{padding:17px 13px;min-height:300px}
+}
+@media(max-width:760px){
+ .topbar{height:66px;padding-inline:14px}
+ .hero{width:100%;grid-template-columns:1fr;padding:30px 20px 24px;gap:24px}
+ .hero h1{font-size:clamp(48px,11vw,64px);letter-spacing:-2.8px}
+ .hero-text{font-size:12px}
+ .hero-photo-wrap{height:clamp(260px,70vw,360px);border-radius:20px}
+ .trust-strip,.section,.partner-strip,.security-section{width:calc(100% - 32px)}
+ .trust-strip{padding:8px;margin-bottom:20px}
+ .trust-strip article{padding:10px 7px}
+ .trust-strip article:first-child{padding-left:7px}
+ .section{padding-top:24px;padding-bottom:38px}
+ .section-heading h2,.faq h2{font-size:29px}
+ .catalog-layout{grid-template-columns:1fr}
+ .product-grid,.steps{grid-template-columns:1fr}
+ .product-card{min-height:0;padding:19px}
+ .product-card p{min-height:0}
+ .recommend-card{padding:18px}
+ .how-section .section-inner{padding-top:35px;padding-bottom:38px}
+ .step-card{min-height:0;padding:19px}
+ .security-section{margin:28px auto 35px;padding:17px;grid-template-columns:42px minmax(0,1fr);gap:12px}
+ .security-symbol{width:42px;height:42px}
+ .security-section h2{font-size:20px}
+ .security-section .text-link{grid-column:2}
+ .footer{padding:23px 18px 18px}
+}
