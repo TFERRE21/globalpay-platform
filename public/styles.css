@@ -511,3 +511,119 @@ body.account-modal-open{overflow:hidden}
 .partner-join>small{grid-column:1/-1;color:#697d96;font-size:11px;line-height:1.6}
 @media(max-width:760px){.partner-join{grid-template-columns:1fr;padding:25px 18px;gap:15px}.partner-join-links{grid-template-columns:1fr 1fr}.partner-join-links a{padding:12px}.lender-chip{min-width:140px}}
 @media(prefers-reduced-motion:reduce){.lenders-track{animation:none}}
+
+
+/* GlobalPay/CrediViva UI refresh — responsive fintech visual system */
+:root{
+ --ui-ink:#10233f;--ui-muted:#64748b;--ui-line:#e2e8f0;--ui-surface:#fff;
+ --ui-blue:#1f5eff;--ui-blue-dark:#163ca5;--ui-green:#15803d;
+ --ui-shadow:0 18px 48px rgba(15,35,70,.08);--ui-radius:20px;
+}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{color:var(--ui-ink);-webkit-font-smoothing:antialiased}
+button,a,input,select,textarea{ -webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #3975ff55;outline-offset:3px}
+.button{transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease}
+.button:hover{transform:translateY(-1px);box-shadow:0 10px 22px #1649b51c}
+.button:active{transform:translateY(0)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);border-bottom:1px solid #e7edf5;box-shadow:0 4px 20px #10294d08;backdrop-filter:blur(16px)}
+.brand{gap:11px}
+.brand-mark{filter:drop-shadow(0 5px 9px #2869ff20)}
+.brand-name{letter-spacing:-.5px}
+.hero{isolation:isolate}
+.hero-copy{max-width:650px}
+.hero h1{letter-spacing:-.065em;line-height:.98}
+.hero-text{max-width:550px;line-height:1.8}
+.hero-cta{box-shadow:0 12px 26px #2869ff2c}
+.hero-visual{border-radius:30px;overflow:hidden;box-shadow:0 28px 70px #0c24442b}
+.floating-card{border:1px solid #ffffffa8;box-shadow:0 14px 42px #09234b2a;backdrop-filter:blur(18px)}
+.trust-strip{border:1px solid #e8eef6;border-radius:22px;background:#fff;box-shadow:0 10px 30px #10294d07}
+.products-section,.lenders-section,.benefits-band,.partner-join{scroll-margin-top:100px}
+.product-card{border:1px solid #e1e8f2;border-radius:22px;overflow:hidden;box-shadow:0 8px 28px #10294d08;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.product-card:hover,.product-card:focus-visible{transform:translateY(-4px);box-shadow:0 18px 38px #10294d14;border-color:#c6d8ff}
+.product-card[aria-pressed=true]{border-color:#477bff;box-shadow:0 0 0 3px #477bff1c,0 18px 38px #10294d12}
+.product-art{min-height:150px}
+.product-content{padding:24px}
+.product-content h3{letter-spacing:-.025em;line-height:1.2}
+.selection-panel{border:1px solid #dbe6f6;border-radius:24px;background:linear-gradient(145deg,#fff,#f6f9ff);box-shadow:var(--ui-shadow)}
+.selection-fields select,.selection-fields input{min-height:48px;border:1px solid #d7e1ef;border-radius:12px;background:#fff}
+.lender-chip{box-shadow:0 5px 16px #10294d06}
+footer,.site-footer{border-top:1px solid #e4ebf4}
+
+/* Account sign-in and client area */
+.account-body{background:#f3f7fc}
+.account-page{isolation:isolate}
+.account-shell{position:relative;z-index:1}
+.account-brand{margin-bottom:28px}
+.account-layout{align-items:stretch;gap:clamp(24px,4vw,56px)}
+.account-promo{align-self:center}
+.account-promo-tag{letter-spacing:.12em}
+.account-promo h2{letter-spacing:-.055em;line-height:1.04}
+.account-promo-points span{display:flex;align-items:flex-start;gap:10px}
+.account-main{width:100%;max-width:620px;margin-inline:auto}
+.account-card{border:1px solid #e3eaf4;border-radius:24px;background:rgba(255,255,255,.98);box-shadow:0 24px 70px rgba(15,35,70,.10);padding:clamp(22px,3.2vw,36px)}
+.account-card h1,.account-card h2{letter-spacing:-.035em}
+.account-tabs{display:flex;gap:5px;border:1px solid #e3eaf4;background:#f3f6fb;padding:5px;border-radius:14px;margin-bottom:22px}
+.account-tabs button{min-height:42px;border-radius:10px;color:#60718a;font-weight:800;transition:all .18s ease}
+.account-tabs button.active{background:#fff;color:#1d4ed8;box-shadow:0 3px 12px #0c25420d}
+.account-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.account-form label{display:flex;flex-direction:column;gap:8px;color:#344863;font-weight:700;font-size:12px;min-width:0}
+.account-form label.full,.account-form .full{grid-column:1/-1}
+.account-form input:not([type=checkbox]),.account-form select,.account-form textarea{box-sizing:border-box;width:100%;min-width:0;min-height:48px;padding:12px 14px;border:1px solid #d9e3ef;border-radius:12px;background:#fbfdff;color:#10233f;font:500 14px inherit;transition:border-color .16s ease,box-shadow .16s ease,background .16s ease}
+.account-form input:not([type=checkbox]):hover,.account-form select:hover{border-color:#b9c9e0}
+.account-form input:not([type=checkbox]):focus,.account-form select:focus{outline:0;border-color:#3b73ff;box-shadow:0 0 0 4px #2869ff16;background:#fff}
+.account-form .button{width:100%;min-height:49px;border-radius:12px;font-weight:800}
+.account-check{display:flex!important;flex-direction:row!important;align-items:flex-start;gap:10px!important;color:#5b6d85!important;font-weight:500!important;line-height:1.6}
+.account-check input{width:17px;height:17px;flex:0 0 17px;margin-top:2px;accent-color:#2869ff}
+.account-notice{margin-top:16px;padding:13px 15px;border:1px solid #c9dcff;border-radius:12px;background:#f0f6ff;color:#21477c;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.account-notice[hidden]{display:none!important}
+.account-dashboard{display:none}
+.account-dashboard.show{display:block;animation:accountFadeIn .25s ease both}
+.account-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid #e7edf5}
+.account-toolbar button:not(.button){min-height:39px;border:1px solid #dbe5f2;border-radius:10px;background:#fff;padding:8px 13px;color:#294667;font-weight:750;cursor:pointer}
+.account-section-title{margin:26px 0 12px;color:#142d4d;font-size:17px;letter-spacing:-.025em}
+.loan-item{position:relative;margin:12px 0;padding:18px;border:1px solid #e1e9f3;border-radius:16px;background:#fff;box-shadow:0 6px 18px #10294d06}
+.loan-item h3{margin:0 0 10px;color:#16365e;font-size:16px}
+.loan-item p{margin:7px 0;color:#60718a;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.loan-status{display:inline-flex;align-items:center;border-radius:999px;background:#edf4ff;color:#2855a6;padding:5px 10px;font-size:11px;font-weight:850;text-transform:capitalize}
+#new-loan-panel{margin-top:26px!important;border-radius:18px;background:#f9fbff;box-shadow:none}
+#new-loan-panel .account-form{margin-top:16px}
+#new-loan-panel>p:last-child{padding:12px 13px;border-radius:10px;background:#f0f5fc}
+.support-launcher{box-shadow:0 10px 28px #153d8028}
+.support-widget{border:1px solid #dce6f2;border-radius:18px;box-shadow:0 24px 70px #10294d24;overflow:hidden}
+.account-modal-panel{border:1px solid #e1e8f3;box-shadow:0 30px 100px #06172d50}
+.account-modal-top{font-size:13px}
+@keyframes accountFadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){
+ .topbar{position:relative}
+ .hero{gap:28px}
+ .hero-visual{min-height:320px}
+ .account-layout{grid-template-columns:1fr}
+ .account-promo{order:2}
+ .account-main{max-width:680px}
+}
+@media(max-width:640px){
+ .hero{padding-top:32px}
+ .hero h1{font-size:clamp(42px,12vw,64px)}
+ .hero-visual{min-height:260px;border-radius:22px}
+ .floating-card{max-width:calc(100% - 24px)}
+ .trust-strip{border-radius:16px}
+ .product-grid{gap:14px}
+ .product-card{border-radius:17px}
+ .product-content{padding:18px}
+ .account-page{padding:14px 10px 28px}
+ .account-brand{margin:5px 0 14px}
+ .account-card{padding:20px 16px;border-radius:18px}
+ .account-form{grid-template-columns:1fr;gap:14px}
+ .account-form label.full,.account-form .full{grid-column:auto}
+ .account-form .full{grid-column:1}
+ .account-toolbar{align-items:flex-start}
+ .account-toolbar h1{font-size:25px!important}
+ .account-modal{padding:calc(env(safe-area-inset-top,0px) + 8px) 8px calc(env(safe-area-inset-bottom,0px) + 8px)}
+ .account-modal-panel{height:calc(100dvh - 80px);border-radius:16px}
+ .account-embedded .account-card{padding:20px 15px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
