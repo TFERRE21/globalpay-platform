@@ -183,7 +183,7 @@ app.post("/api/auth/register",async(req,res)=>{
   const hash=await bcrypt.hash(password,12);
   const result=await pool.query("INSERT INTO cv_users(name,email,password_hash,phone,whatsapp_opt_in) VALUES($1,$2,$3,$4,$5) RETURNING id,name,email,phone,whatsapp_opt_in,created_at",[name,email,hash,phone||null,whatsappOptIn]);
   const user=result.rows[0];
-  return res.status(201).json({success:true,token:signToken(user),user,message:"Cadastro realizado. Você já pode acompanhar seus pedidos."});
+  return res.status(201).json({success:true,user:{id:user.id,name:user.name,email:user.email,phone:user.phone||"",whatsapp_opt_in:user.whatsapp_opt_in},message:"Cadastro realizado com sucesso. Entrando na sua conta..."});
  } catch(error) {
   if(error.code==="23505") return res.status(409).json({success:false,message:"Este e-mail já possui cadastro."});
   console.error("[CrediViva register]",error);
