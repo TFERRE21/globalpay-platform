@@ -627,3 +627,17 @@ footer,.site-footer{border-top:1px solid #e4ebf4}
  html{scroll-behavior:auto}
  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
 }
+
+/* Minha Chave Pix */
+.pix-card{margin:26px 0;padding:22px;border:1px solid #dce6f2;border-radius:18px;background:linear-gradient(145deg,#fff,#f7faff);box-shadow:0 10px 30px #10294d08}
+.pix-heading{display:flex;align-items:center;gap:13px;margin-bottom:16px}
+.pix-symbol{display:grid;place-items:center;width:44px;height:44px;border-radius:13px;background:#eaf1ff;color:#2869ff;font-size:24px;font-weight:800}
+.pix-heading h2{margin:0 0 4px;color:#142d4d;font:800 19px Manrope,sans-serif}
+.pix-heading p{margin:0;color:#60718a;font-size:12px;line-height:1.5}
+.pix-status-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0}
+.pix-security-note{color:#50705e;font-size:11px;font-weight:700}
+.pix-disclaimer{padding:12px 14px;border:1px solid #f1dfb4;border-radius:11px;background:#fff9e9;color:#795b1b;font-size:12px;line-height:1.6}
+.pix-summary{margin-top:14px;padding:14px;border:1px solid #d8e5f6;border-radius:12px;background:#f6f9ff;overflow-wrap:anywhere}
+.pix-summary strong{display:block;color:#19395e;font-size:13px}
+.pix-summary p{margin:7px 0 0;color:#60718a;font-size:12px;line-height:1.6}
+@media(max-width:640px){.pix-card{padding:17px 14px}.pix-status-row{align-items:flex-start;flex-direction:column}}
