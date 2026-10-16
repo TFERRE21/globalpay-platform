@@ -49,17 +49,3 @@ const resetToken=new URLSearchParams(location.search).get("reset");
 if(resetToken){hideAuthForms();if(resetForm){resetForm.hidden=false;notice.hidden=false;notice.textContent="Crie sua nova senha. O link de recuperação expira em 30 minutos.";}}
 resetForm?.addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(resetForm),password=f.get("password"),confirm=f.get("confirmPassword");if(password!==confirm){showNotice(notice,"As senhas não são iguais.");return;}try{const data=await api("/api/auth/reset-password",{method:"POST",body:JSON.stringify({token:resetToken,password})});showNotice(notice,data.message);resetForm.hidden=true;history.replaceState({},"",location.pathname);setTab("login");}catch(err){showNotice(notice,err.message);}});
 changePasswordForm?.addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(changePasswordForm),currentPassword=f.get("currentPassword"),newPassword=f.get("newPassword");try{const data=await api("/api/auth/change-password",{method:"POST",body:JSON.stringify({currentPassword,newPassword})});showNotice($("#password-notice"),data.message);changePasswordForm.reset();}catch(err){showNotice($("#password-notice"),err.message);}});
-
-const forgotBtn=document.querySelector("#forgot-password");
-const forgotForm=document.querySelector("#forgot-form");
-const resetForm=document.querySelector("#reset-form");
-const backBtn=document.querySelector("#back-to-login");
-const changeForm=document.querySelector("#change-password-form");
-function hideAccountForms(){[registerForm,loginForm,forgotForm,resetForm].forEach(form=>{if(form)form.hidden=true;});}
-forgotBtn?.addEventListener("click",()=>{hideAccountForms();forgotForm.hidden=false;notice.hidden=true;});
-backBtn?.addEventListener("click",()=>setTab("login"));
-forgotForm?.addEventListener("submit",async event=>{event.preventDefault();const email=new FormData(forgotForm).get("email");try{const result=await api("/api/auth/forgot-password",{method:"POST",body:JSON.stringify({email})});showNotice(notice,result.message);forgotForm.reset();}catch(error){showNotice(notice,error.message);}});
-const recoveryToken=new URLSearchParams(location.search).get("reset");
-if(recoveryToken){hideAccountForms();if(resetForm){resetForm.hidden=false;showNotice(notice,"Crie uma nova senha. O link expira em 30 minutos.");}}
-resetForm?.addEventListener("submit",async event=>{event.preventDefault();const formData=new FormData(resetForm);const newPass=formData.get("password");if(newPass!==formData.get("confirmPassword")){showNotice(notice,"As senhas não são iguais.");return;}try{const result=await api("/api/auth/reset-password",{method:"POST",body:JSON.stringify({token:recoveryToken,password:newPass})});showNotice(notice,result.message);resetForm.hidden=true;history.replaceState({},"",location.pathname);setTab("login");}catch(error){showNotice(notice,error.message);}});
-changeForm?.addEventListener("submit",async event=>{event.preventDefault();const formData=new FormData(changeForm);try{const result=await api("/api/auth/change-password",{method:"POST",body:JSON.stringify({currentPassword:formData.get("currentPassword"),newPassword:formData.get("newPassword")})});showNotice(document.querySelector("#password-notice"),result.message);changeForm.reset();}catch(error){showNotice(document.querySelector("#password-notice"),error.message);}});
