@@ -168,6 +168,7 @@ app.post("/api/auth/change-password",auth,async(req,res)=>{
 
 app.post("/api/auth/register",async(req,res)=>{
  try {
+  if(!JWT_SECRET||JWT_SECRET.length<32)return res.status(503).json({success:false,message:"O cadastro está temporariamente indisponível: falta configurar JWT_SECRET no servidor. Nenhuma conta foi criada; avise o suporte do site."});
   const name=String(req.body?.name||"").trim(), email=String(req.body?.email||"").trim().toLowerCase(), password=String(req.body?.password||""), phone=normalizePhone(req.body?.phone);
   const whatsappOptIn=req.body?.whatsappOptIn===true;
   if(name.length<2||name.length>140||!/^\S+@\S+\.\S+$/.test(email)||password.length<8) return res.status(400).json({success:false,message:"Informe nome, e-mail válido e senha com pelo menos 8 caracteres."});
@@ -184,6 +185,7 @@ app.post("/api/auth/register",async(req,res)=>{
 });
 app.post("/api/auth/login",async(req,res)=>{
  try {
+  if(!JWT_SECRET||JWT_SECRET.length<32)return res.status(503).json({success:false,message:"O login está temporariamente indisponível: falta configurar JWT_SECRET no servidor."});
   const email=String(req.body?.email||"").trim().toLowerCase(), password=String(req.body?.password||"");
   const r=await pool.query("SELECT id,name,email,password_hash,phone,whatsapp_opt_in,active FROM cv_users WHERE email=$1",[email]);
   if(!r.rows.length||!r.rows[0].active||!(await bcrypt.compare(password,r.rows[0].password_hash))) return res.status(401).json({success:false,message:"E-mail ou senha inválidos."});
