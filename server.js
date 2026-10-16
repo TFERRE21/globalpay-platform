@@ -57,6 +57,13 @@ async function ensureSchema() {
     );
     CREATE INDEX IF NOT EXISTS cv_loan_applications_user_idx ON cv_loan_applications(user_id, created_at DESC);
     CREATE TABLE IF NOT EXISTS cv_push_subscriptions (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL REFERENCES cv_users(id) ON DELETE CASCADE, endpoint TEXT NOT NULL UNIQUE, subscription_json JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
+    CREATE TABLE IF NOT EXISTS cv_pix_keys (
+      id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL UNIQUE REFERENCES cv_users(id) ON DELETE CASCADE,
+      key_type VARCHAR(20) NOT NULL CHECK (key_type IN ('CPF','CNPJ','EMAIL','PHONE','EVP')),
+      key_value TEXT NOT NULL, holder_name VARCHAR(140) NOT NULL, holder_document VARCHAR(18) NOT NULL,
+      institution VARCHAR(140), status VARCHAR(24) NOT NULL DEFAULT 'CADASTRADA',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
     CREATE TABLE IF NOT EXISTS cv_password_resets (id BIGSERIAL PRIMARY KEY, user_id BIGINT NOT NULL REFERENCES cv_users(id) ON DELETE CASCADE, token_hash TEXT NOT NULL UNIQUE, expires_at TIMESTAMPTZ NOT NULL, used_at TIMESTAMPTZ, created_at TIMESTAMPTZ NOT NULL DEFAULT NOW());
     CREATE TABLE IF NOT EXISTS cv_support_messages (
       id BIGSERIAL PRIMARY KEY, user_id BIGINT REFERENCES cv_users(id) ON DELETE SET NULL,
@@ -205,6 +212,51 @@ app.put("/api/auth/phone",auth,async(req,res)=>{
   res.json({success:true,user:r.rows[0],message:"Telefone e preferências atualizados."});
  }catch(error){console.error(error);res.status(500).json({success:false,message:"Não foi possível atualizar o telefone."});}
 });
+
+function pixDigits(value){return String(value||"").replace(/\D/g,"");}
+function pixValidCPF(value){
+ const d=pixDigits(value);if(d.length!==11||/^(\d)\1{10}$/.test(d))return false;
+ let sum=0;for(let i=0;i<9;i++)sum+=Number(d[i])*(10-i);
+ let check=(sum*10)%11;if(check===10)check=0;if(check!==Number(d[9]))return false;
+ sum=0;for(let i=0;i<10;i++)sum+=Number(d[i])*(11-i);
+ check=(sum*10)%11;if(check===10)check=0;return check===Number(d[10]);
+}
+function pixValidCNPJ(value){
+ const d=pixDigits(value);if(d.length!==14||/^(\d)\1{13}$/.test(d))return false;
+ const calc=(weights,end)=>{let sum=0;for(let i=0;i<weights.length;i++)sum+=Number(d[i])*weights[i];const r=sum%11;return r<2?0:11-r;};
+ if(calc([5,4,3,2,9,8,7,6,5,4,3,2])!==Number(d[12]))return false;
+ return calc([6,5,4,3,2,9,8,7,6,5,4,3,2])===Number(d[13]);
+}
+function pixMask(type,value){
+ const v=String(value||"");
+ if(type==="EMAIL"){const p=v.split("@");return p.length===2?p[0].slice(0,2)+"***@"+p[1]:"***";}
+ if(type==="PHONE"){const d=pixDigits(v);return d.length>4?"+"+d.slice(0,2)+" ("+d.slice(2,4)+") *****-"+d.slice(-4):"***";}
+ if(type==="CPF"||type==="CNPJ"){const d=pixDigits(v);return d.length>=5?"***.***.***-"+d.slice(-2):"***";}
+ return v.length>8?v.slice(0,4)+"…"+v.slice(-4):"••••••••";
+}
+function publicPix(row){return row?{keyType:row.key_type,maskedKey:pixMask(row.key_type,row.key_value),holderName:row.holder_name,maskedDocument:"***.***.***-"+row.holder_document.slice(-2),institution:row.institution||"",status:row.status,createdAt:row.created_at,updatedAt:row.updated_at}:null;}
+app.get("/api/pix-key",auth,async(req,res)=>{
+ try{const r=await pool.query("SELECT key_type,key_value,holder_name,holder_document,institution,status,created_at,updated_at FROM cv_pix_keys WHERE user_id=$1",[req.user.id]);res.json({success:true,pixKey:publicPix(r.rows[0]||null),transferProviderConnected:false});}
+ catch(error){console.error("[CrediViva Pix read]",error.message||error);res.status(500).json({success:false,message:"Não foi possível consultar a chave Pix."});}
+});
+app.put("/api/pix-key",auth,async(req,res)=>{
+ try{
+  const keyType=String(req.body?.keyType||"").toUpperCase(),keyValue=String(req.body?.keyValue||"").trim(),holderName=String(req.body?.holderName||"").trim().slice(0,140),holderDocument=pixDigits(req.body?.holderDocument),institution=String(req.body?.institution||"").trim().slice(0,140);
+  if(!["CPF","CNPJ","EMAIL","PHONE","EVP"].includes(keyType)||!keyValue||holderName.length<2||![11,14].includes(holderDocument.length))return res.status(400).json({success:false,message:"Preencha o tipo e a chave Pix, o nome do titular e um CPF/CNPJ válido."});
+  if(holderDocument.length===11&&!pixValidCPF(holderDocument)||holderDocument.length===14&&!pixValidCNPJ(holderDocument))return res.status(400).json({success:false,message:"O CPF/CNPJ do titular não passou na validação dos dígitos."});
+  if(keyType==="CPF"&&!pixValidCPF(keyValue))return res.status(400).json({success:false,message:"Informe um CPF válido como chave Pix."});
+  if(keyType==="CNPJ"&&!pixValidCNPJ(keyValue))return res.status(400).json({success:false,message:"Informe um CNPJ válido como chave Pix."});
+  if(keyType==="EMAIL"&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(keyValue))return res.status(400).json({success:false,message:"Informe um e-mail válido como chave Pix."});
+  if(keyType==="PHONE"&&pixDigits(keyValue).length!==13)return res.status(400).json({success:false,message:"Informe o telefone com código do país, DDD e número (ex.: +5561999999999)."});
+  if(keyType==="EVP"&&!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(keyValue))return res.status(400).json({success:false,message:"Informe uma chave aleatória no formato UUID."});
+  const existing=await pool.query("SELECT key_value FROM cv_pix_keys WHERE user_id=$1",[req.user.id]);
+  if(existing.rows.length&&existing.rows[0].key_value!==keyValue&&req.body?.confirmReplace!==true)return res.status(409).json({success:false,requiresConfirmation:true,message:"Você já possui uma chave cadastrada. Confirme se deseja substituí-la."});
+  const q="INSERT INTO cv_pix_keys(user_id,key_type,key_value,holder_name,holder_document,institution,status) VALUES($1,$2,$3,$4,$5,$6,'CADASTRADA') ON CONFLICT(user_id) DO UPDATE SET key_type=EXCLUDED.key_type,key_value=EXCLUDED.key_value,holder_name=EXCLUDED.holder_name,holder_document=EXCLUDED.holder_document,institution=EXCLUDED.institution,status='CADASTRADA',updated_at=NOW() RETURNING key_type,key_value,holder_name,holder_document,institution,status,created_at,updated_at";
+  const r=await pool.query(q,[req.user.id,keyType,keyValue,holderName,holderDocument,institution||null]);
+  res.json({success:true,pixKey:publicPix(r.rows[0]),message:"Chave Pix cadastrada. O formato foi validado, mas a titularidade não foi verificada e nenhuma transferência foi realizada."});
+ }catch(error){console.error("[CrediViva Pix save]",error.message||error);res.status(500).json({success:false,message:"Não foi possível salvar a chave Pix."});}
+});
+
 app.post("/api/loans",auth,async(req,res)=>{
  try {
   const product=String(req.body?.product||"").slice(0,80), amount=String(req.body?.amount||"").slice(0,80), urgency=String(req.body?.urgency||"").slice(0,80);
