@@ -99,7 +99,19 @@ async function requireDatabase(req,res,next) {
 app.use(["/api/auth","/api/loans","/api/admin/loans"], requireDatabase);
 
 app.get("/api/health",(_req,res)=>res.json({status:"ok",app:"CrediViva",mode:"application-tracking",financialProviderConnected:false,loanApprovalAutomatic:false}));
-app.get("/api/status",(_req,res)=>res.json({databaseConfigured:!!(process.env.NF_POSTGRESQL_POSTGRES_URI||process.env.DATABASE_URL),whatsappConfigured:!!(process.env.WHATSAPP_ACCESS_TOKEN&&process.env.WHATSAPP_PHONE_NUMBER_ID),financialProviderConnected:false,loanApprovalAutomatic:false}));
+app.get("/api/status",async(_req,res)=>{
+ const databaseConfigured=!!(process.env.NF_POSTGRESQL_POSTGRES_URI||process.env.DATABASE_URL);
+ let databaseConnected=false, schemaReadyStatus=false;
+ if(databaseConfigured){
+  try{
+   await pool.query("SELECT 1");
+   databaseConnected=true;
+   const tables=await pool.query("SELECT to_regclass('public.cv_users') AS users,to_regclass('public.cv_loan_applications') AS loans");
+   schemaReadyStatus=!!(tables.rows[0]?.users&&tables.rows[0]?.loans);
+  }catch(error){console.error("[CrediViva status]",error.message||error);}
+ }
+ res.json({app:"CrediViva",databaseConfigured,databaseConnected,schemaReady:schemaReadyStatus,jwtConfigured:!!(JWT_SECRET&&JWT_SECRET.length>=32),whatsappConfigured:!!(process.env.WHATSAPP_ACCESS_TOKEN&&process.env.WHATSAPP_PHONE_NUMBER_ID),financialProviderConnected:false,loanApprovalAutomatic:false});
+});
 
 
 app.post("/api/auth/forgot-password",async(req,res)=>{
